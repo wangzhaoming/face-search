@@ -34,9 +34,9 @@
 
 ### 项目文档
 
-* [文档-1.0.0](https://gitee.com/open-visual/face-search/blob/master/scripts/docs/doc-1.0.0.md)
+* 在线文档：[文档-1.0.0](https://gitee.com/open-visual/face-search/blob/master/scripts/docs/doc-1.0.0.md)
 
-* 启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
+* swagger文档：启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
 
 ### 搜索客户端
 
