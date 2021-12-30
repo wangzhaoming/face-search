@@ -23,6 +23,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.visual.face.search</groupId>
+            <artifactId>face-search-util</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>
@@ -34,17 +39,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-
-        <!--向量数据库引擎-->
-        <dependency>
-            <groupId>com.alibaba.proxima</groupId>
-            <artifactId>proxima-be-java-sdk</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.milvus</groupId>
-            <artifactId>milvus-java-sdk</artifactId>
         </dependency>
 
         <!--阿里数据库连接池 -->
