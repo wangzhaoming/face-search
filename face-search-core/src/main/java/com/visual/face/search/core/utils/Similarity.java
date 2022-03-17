@@ -46,6 +46,8 @@ public class Similarity {
                 distance += temp;
             }
             distance = Math.sqrt(distance);
+        }else {
+            throw new RuntimeException("vector length not equal");
         }
         return (float) distance;
     }
