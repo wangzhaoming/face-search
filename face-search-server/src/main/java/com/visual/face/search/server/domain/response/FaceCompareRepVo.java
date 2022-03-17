@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class FaceCompareRepVo extends BaseVo {
     /**向量的距离**/
-    @ApiModelProperty(value="向量距离:>=0", position = 1, required = true)
+    @ApiModelProperty(value="向量欧式距离:>=0", position = 1, required = true)
     private Float distance;
     /**转换后的置信度**/
-    @ApiModelProperty(value="转换后的置信度:[-100,100]，值越大，相似度越高。", position = 2, required = true)
+    @ApiModelProperty(value="余弦距离转换后的置信度:[-100,100]，值越大，相似度越高。", position = 2, required = true)
     private Float confidence;
     /**人脸信息**/
     @ApiModelProperty(value="人脸信息,参数needFaceInfo=false时，值为null", position = 3, required = false)
