@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>com.visual.face.search</groupId>
-            <artifactId>face-search-util</artifactId>
+            <artifactId>face-search-engine</artifactId>
         </dependency>
 
         <dependency>
@@ -90,6 +90,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>

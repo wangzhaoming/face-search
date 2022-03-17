@@ -18,7 +18,7 @@
         <module>face-search-core</module>
         <module>face-search-server</module>
         <module>face-search-client</module>
-        <module>face-search-util</module>
+        <module>face-search-engine</module>
         <module>face-search-test</module>
     </modules>
 
@@ -55,7 +55,7 @@
 
             <dependency>
                 <groupId>com.visual.face.search</groupId>
-                <artifactId>face-search-util</artifactId>
+                <artifactId>face-search-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
