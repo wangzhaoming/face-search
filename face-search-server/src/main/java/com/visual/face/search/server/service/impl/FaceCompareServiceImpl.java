@@ -28,11 +28,11 @@ public class FaceCompareServiceImpl implements FaceCompareService {
     public FaceCompareRepVo faceCompare(FaceCompareReqVo compareReq) {
         FaceInfo faceInfoA = getFaceInfo(compareReq.getFaceScoreThreshold(), compareReq.getImageBase64A());
         if(null == faceInfoA){
-            throw new RuntimeException("image A is not face");
+            throw new RuntimeException("Image A is not face");
         }
         FaceInfo faceInfoB = getFaceInfo(compareReq.getFaceScoreThreshold(), compareReq.getImageBase64B());
         if(null == faceInfoB){
-            throw new RuntimeException("image B is not face");
+            throw new RuntimeException("Image B is not face");
         }
         //计算余弦相似度
         float simVal = Similarity.cosineSimilarity(faceInfoA.embedding.embeds, faceInfoA.embedding.embeds);
