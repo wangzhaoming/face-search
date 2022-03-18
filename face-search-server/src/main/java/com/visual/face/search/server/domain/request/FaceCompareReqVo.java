@@ -59,6 +59,8 @@ public class FaceCompareReqVo extends BaseVo {
     }
 
     public void setNeedFaceInfo(Boolean needFaceInfo) {
-        this.needFaceInfo = needFaceInfo;
+        if(null != needFaceInfo){
+            this.needFaceInfo = needFaceInfo;
+        }
     }
 }

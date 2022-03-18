@@ -35,10 +35,11 @@ public class FaceCompareServiceImpl implements FaceCompareService {
             throw new RuntimeException("Image B is not face");
         }
         //计算余弦相似度
-        float simVal = Similarity.cosineSimilarity(faceInfoA.embedding.embeds, faceInfoA.embedding.embeds);
+        float simVal = Similarity.cosineSimilarity(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
         float confidence = (float) Math.floor(simVal * 10000)/100;
         //欧式距离
-        float distance = Similarity.euclideanDistance(faceInfoA.embedding.embeds, faceInfoA.embedding.embeds);
+        float euclideanDistance = Similarity.euclideanDistance(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
+        float distance = (float) Math.floor(euclideanDistance * 10000)/100;
         //构建返回值
         FaceCompareRepVo faceCompareRep = new FaceCompareRepVo();
         faceCompareRep.setDistance(distance);
