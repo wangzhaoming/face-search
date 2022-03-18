@@ -16,24 +16,27 @@ import java.util.Map;
 public class ValueUtil {
 
     public static List<FiledColumn> getFaceColumns(Collection collection){
-        if(null != collection.getSchemaInfo() && !collection.getSchemaInfo().isEmpty()){
+        if(null != collection.getSchemaInfo() && !collection.getSchemaInfo().isEmpty()) {
             CollectRepVo collectVo = JsonUtil.toEntity(collection.getSchemaInfo(), CollectRepVo.class);
-            return collectVo.getFaceColumns();
-        }else{
-            return new ArrayList<>();
+            if (null != collectVo && null != collectVo.getFaceColumns()) {
+                return collectVo.getFaceColumns();
+            }
         }
+        return new ArrayList<>();
     }
 
     public static List<FiledColumn> getSampleColumns(Collection collection){
         if(null != collection.getSchemaInfo() && !collection.getSchemaInfo().isEmpty()){
             CollectRepVo collectVo = JsonUtil.toEntity(collection.getSchemaInfo(), CollectRepVo.class);
-            return collectVo.getSampleColumns();
-        }else{
-            return new ArrayList<>();
+            if (null != collectVo && null != collectVo.getSampleColumns()) {
+                return collectVo.getSampleColumns();
+            }
         }
+        return new ArrayList<>();
     }
 
     public static FieldKeyValues getFieldKeyValues(Map<String, Object> map , List<FiledColumn> columns){
+        columns = null != columns ? columns : new ArrayList<>();
         Map<String, String> keyMap = new HashMap<>();
         for(FiledColumn column : columns){
             for(String dataKey : map.keySet()){

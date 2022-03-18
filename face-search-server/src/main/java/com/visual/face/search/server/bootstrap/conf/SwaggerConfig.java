@@ -38,7 +38,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 		return new ApiInfoBuilder()
 				.title("人脸搜索服务API")
 				.description("人脸搜索服务API")
-				.version("1.0.0")
+				.version("1.1.0")
 				.build();
 	}
 
