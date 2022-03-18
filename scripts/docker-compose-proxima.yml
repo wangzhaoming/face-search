@@ -30,7 +30,7 @@ services:
 
   visual-facesearch:
     container_name: face-search-server-standalone
-    image: divenswu/face-search:1.0.0
+    image: divenswu/face-search:1.1.0
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:mysql://visual-mysql:3306/visual_face_search?useUnicode=true&characterEncoding=utf8'
       SPRING_DATASOURCE_USERNAME: root
