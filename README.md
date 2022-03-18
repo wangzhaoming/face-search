@@ -51,7 +51,7 @@
 <dependency>
     <groupId>com.visual.face.search</groupId>
     <artifactId>face-search-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 * 其他语言依赖
