@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 
 /***
@@ -33,10 +34,10 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     private Integer shardsNum;
     /**自定义的样本字段**/
     @ApiModelProperty(value="自定义的样本属性字段", position = 5,required = false)
-    private List<FiledColumn> sampleColumns;
+    private List<FiledColumn> sampleColumns = new ArrayList<>();
     /**自定义的人脸字段**/
     @ApiModelProperty(value="自定义的人脸属性字段", position = 6,required = false)
-    private List<FiledColumn> faceColumns;
+    private List<FiledColumn> faceColumns = new ArrayList<>();
     /**启用binlog同步**/
     @ApiModelProperty(value="启用binlog同步。扩展字段，暂不支持该功能。", position = 7,required = false)
     private Boolean syncBinLog;
@@ -101,7 +102,9 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     }
 
     public ExtendsVo setSampleColumns(List<FiledColumn> sampleColumns) {
-        this.sampleColumns = sampleColumns;
+        if(null != sampleColumns){
+            this.sampleColumns = sampleColumns;
+        }
         return (ExtendsVo) this;
     }
 
@@ -110,7 +113,9 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     }
 
     public ExtendsVo setFaceColumns(List<FiledColumn> faceColumns) {
-        this.faceColumns = faceColumns;
+        if(null != faceColumns){
+            this.faceColumns = faceColumns;
+        }
         return (ExtendsVo) this;
     }
 

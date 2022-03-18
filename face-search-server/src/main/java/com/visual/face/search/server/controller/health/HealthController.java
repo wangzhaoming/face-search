@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 
-@Api(tags="05、公共服务-健康检测")
+@Api(tags="06、公共服务-健康检测")
 @RestController("healthController")
 @RequestMapping("/common/health")
 public class HealthController {

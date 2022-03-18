@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/visual/search")
 public class FaceSearchController extends FaceSearchControllerImpl {
 
-    @ApiOperation(value="1、人脸搜索1:N", position = 1)
+    @ApiOperation(value="1、人脸搜索M:N", position = 1)
     @Override
     @ResponseBody
     @RequestMapping(value = "/do", method = RequestMethod.POST)

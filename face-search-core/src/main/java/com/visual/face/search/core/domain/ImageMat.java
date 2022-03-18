@@ -9,7 +9,6 @@ import org.opencv.dnn.Dnn;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 
 /**
  * 图片加载工具
@@ -66,8 +66,11 @@ public class ImageMat implements Serializable {
     public static ImageMat fromBase64(String base64Str){
         InputStream inputStream = null;
         try {
-            BASE64Decoder decoder = new BASE64Decoder();
-            byte[] data = decoder.decodeBuffer(base64Str);
+            // 新版本JDK被移除，替换为Base64.Decoder
+            // BASE64Decoder decoder = new BASE64Decoder();
+            // byte[] data = decoder.decodeBuffer(base64Str);
+            Base64.Decoder decoder = Base64.getMimeDecoder();
+            byte[] data = decoder.decode(base64Str);
             inputStream = new ByteArrayInputStream(data);
             return fromInputStream(inputStream);
         }catch (Exception e){
