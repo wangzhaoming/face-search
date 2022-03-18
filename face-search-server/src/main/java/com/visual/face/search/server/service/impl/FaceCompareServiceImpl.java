@@ -36,18 +36,18 @@ public class FaceCompareServiceImpl implements FaceCompareService {
         }
         //计算余弦相似度
         float simVal = Similarity.cosineSimilarity(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
-        float confidence = (float) Math.floor(simVal * 1000000)/100;
+        float confidence = (float) Math.floor(simVal * 1000000)/10000;
         //欧式距离
         float euclideanDistance = Similarity.euclideanDistance(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
-        float distance = (float) Math.floor(euclideanDistance * 1000000)/100;
+        float distance = (float) Math.floor(euclideanDistance * 10000)/10000;
         //构建返回值
         FaceCompareRepVo faceCompareRep = new FaceCompareRepVo();
         faceCompareRep.setDistance(distance);
         faceCompareRep.setConfidence(confidence);
         if(compareReq.getNeedFaceInfo()){
             CompareFace compareFace = new CompareFace();
-            compareFace.setFaceScoreA((float) Math.floor(faceInfoA.score * 1000000)/100);
-            compareFace.setFaceScoreB((float) Math.floor(faceInfoA.score * 1000000)/100);
+            compareFace.setFaceScoreA((float) Math.floor(faceInfoA.score * 1000000)/10000);
+            compareFace.setFaceScoreB((float) Math.floor(faceInfoA.score * 1000000)/10000);
             FaceInfo.FaceBox boxA = faceInfoA.box;
             compareFace.setLocationA(FaceLocation.build(boxA.leftTop.x, boxA.leftTop.y, boxA.width(), boxA.height()));
             FaceInfo.FaceBox boxB = faceInfoB.box;
