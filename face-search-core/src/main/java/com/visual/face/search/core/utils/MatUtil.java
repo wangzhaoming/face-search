@@ -1,10 +1,10 @@
 package com.visual.face.search.core.utils;
 
 import org.opencv.core.Mat;
-import sun.misc.BASE64Encoder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.Objects;
 
 public class MatUtil {
@@ -42,8 +42,11 @@ public class MatUtil {
             byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(matToBufferedImage(mat), "jpg", byteArrayOutputStream);
             byte[] bytes = byteArrayOutputStream.toByteArray();
-            BASE64Encoder encoder = new BASE64Encoder();
-            return encoder.encodeBuffer(Objects.requireNonNull(bytes));
+            // 新版本JDK被移除，替换为Base64.Encoder
+//            BASE64Encoder encoder = new BASE64Encoder();
+//            return encoder.encodeBuffer(Objects.requireNonNull(bytes));
+            Base64.Encoder encoder = Base64.getMimeEncoder();
+            return encoder.encodeToString(Objects.requireNonNull(bytes));
         }catch (Exception e){
             throw new RuntimeException(e);
         }finally {
