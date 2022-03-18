@@ -32,6 +32,12 @@
 
 &ensp; &ensp; 2、[PCN](https://github.com/Rock-100/FaceKit/tree/master/PCN)
 
+### 版本1.1.0更新
+
+* 1、修复已知BUG
+* 2、添加人脸比对1：1接口，详见文档第[05、人脸比对服务](https://gitee.com/open-visual/face-search/blob/dev-1.1.0/scripts/docs/doc-1.1.0.md#05%E4%BA%BA%E8%84%B8%E6%AF%94%E5%AF%B9%E6%9C%8D%E5%8A%A1)
+
+
 ### 项目文档
 
 * 在线文档：[文档-1.1.0](https://gitee.com/open-visual/face-search/blob/dev-1.1.0/scripts/docs/doc-1.1.0.md)
