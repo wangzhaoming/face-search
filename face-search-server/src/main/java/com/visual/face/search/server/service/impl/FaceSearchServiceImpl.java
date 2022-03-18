@@ -123,7 +123,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
             FaceInfo.FaceBox box = faceInfos.get(i).box;
             FaceSearchRepVo vo = FaceSearchRepVo.build();
             vo.setLocation(FaceLocation.build(box.leftTop.x, box.leftTop.y, box.width(), box.height()));
-            vo.setFaceScore((float)Math.floor(faceInfos.get(i).score * 10000)/100);
+            vo.setFaceScore((float)Math.floor(faceInfos.get(i).score * 1000000)/100);
             List<SampleFaceVo> match = new ArrayList<>();
             SearchResult searchResult = result.get(i);
             List<SearchDocument> documents = searchResult.getDocuments();
@@ -135,7 +135,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
                     String faceVectorStr = MapUtils.getString(face, Constant.ColumnNameFaceVector);
                     float[] faceVector = ValueUtil.convertVector(faceVectorStr);
                     float simVal = Similarity.cosineSimilarity(faceInfos.get(i).embedding.embeds, faceVector);
-                    float confidence = (float) Math.floor(simVal * 10000)/100;
+                    float confidence = (float) Math.floor(simVal * 1000000)/100;
                     if(null != sampleId && sampleMapping.containsKey(sampleId) && confidence >= search.getConfidenceThreshold()){
                         Map<String, Object> sample = sampleMapping.get(sampleId);
                         SampleFaceVo faceVo = SampleFaceVo.build();
@@ -143,7 +143,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
                         faceVo.setFaceId(document.getFaceId());
                         faceVo.setFaceScore(faceScore);
                         faceVo.setConfidence(confidence);
-                        faceVo.setDistance((float) Math.floor(document.getScore() * 100) / 100);
+                        faceVo.setDistance((float) Math.floor(document.getScore() * 1000000) / 100);
                         faceVo.setFaceData(ValueUtil.getFieldKeyValues(face, ValueUtil.getFaceColumns(collection)));
                         faceVo.setSampleData(ValueUtil.getFieldKeyValues(sample, ValueUtil.getSampleColumns(collection)));
                         match.add(faceVo);
