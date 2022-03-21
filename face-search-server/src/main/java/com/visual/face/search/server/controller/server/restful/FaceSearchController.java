@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @Api(tags="04、人脸搜索服务")
 @RestController("visualFaceSearchController")
@@ -19,7 +21,7 @@ public class FaceSearchController extends FaceSearchControllerImpl {
     @Override
     @ResponseBody
     @RequestMapping(value = "/do", method = RequestMethod.POST)
-    public ResponseInfo<List<FaceSearchRepVo>> search(@RequestBody FaceSearchReqVo search) {
+    public ResponseInfo<List<FaceSearchRepVo>> search(@RequestBody @Valid FaceSearchReqVo search) {
         return super.search(search);
     }
 

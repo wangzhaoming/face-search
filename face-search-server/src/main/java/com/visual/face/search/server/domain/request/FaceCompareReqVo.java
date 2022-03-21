@@ -2,9 +2,8 @@ package com.visual.face.search.server.domain.request;
 
 import com.visual.face.search.server.domain.base.BaseVo;
 import io.swagger.annotations.ApiModelProperty;
-
+import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class FaceCompareReqVo extends BaseVo {
 
@@ -19,7 +18,7 @@ public class FaceCompareReqVo extends BaseVo {
     private String imageBase64B;
 
     /**人脸质量分数阈值**/
-    @Size(min = 0, max = 100, message = "faceScoreThreshold is not in the range")
+    @Range(min=0, max = 100, message = "faceScoreThreshold is not in the range")
     @ApiModelProperty(value="人脸质量分数阈值,范围：[0,100]：默认0。当设置为0时，会默认使用当前模型的默认值，该方法为推荐使用方式", position = 3,required = false)
     private Float faceScoreThreshold = 0f;
 
