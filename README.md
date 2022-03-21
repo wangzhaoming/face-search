@@ -122,3 +122,7 @@
 * 微信公众号：关注一下，是对我最大的支持
 
 ![微信公众号](scripts/images/%E5%85%AC%E4%BC%97%E5%8F%B7-%E5%BE%AE%E4%BF%A1.jpg)
+
+
+### 项目开源前端：感谢`HeX`的开源
+* [https://gitee.com/hexpang/face-search-web](https://gitee.com/hexpang/face-search-web)
