@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Api(tags="03、人脸数据管理")
 @RestController("visualFaceDataController")
 @RequestMapping("/visual/face")
@@ -18,7 +20,7 @@ public class FaceDataController extends FaceDataControllerImpl {
     @Override
     @ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseInfo<FaceDataRepVo> create(@RequestBody FaceDataReqVo face) {
+    public ResponseInfo<FaceDataRepVo> create(@RequestBody @Valid FaceDataReqVo face) {
         return super.create(face);
     }
 

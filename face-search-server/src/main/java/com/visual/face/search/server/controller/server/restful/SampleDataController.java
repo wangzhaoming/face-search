@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Api(tags="02、人脸样本管理")
@@ -20,7 +21,7 @@ public class SampleDataController extends SampleDataControllerImpl {
     @Override
     @ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseInfo<Boolean> create(@RequestBody SampleDataReqVo sample) {
+    public ResponseInfo<Boolean> create(@RequestBody @Valid SampleDataReqVo sample) {
         return super.create(sample);
     }
 
@@ -28,7 +29,7 @@ public class SampleDataController extends SampleDataControllerImpl {
     @Override
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseInfo<Boolean> update(@RequestBody SampleDataReqVo sample) {
+    public ResponseInfo<Boolean> update(@RequestBody @Valid SampleDataReqVo sample) {
         return super.update(sample);
     }
 
