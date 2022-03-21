@@ -6,10 +6,9 @@ import com.visual.face.search.server.domain.request.FaceCompareReqVo;
 import com.visual.face.search.server.domain.response.FaceCompareRepVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Api(tags="05、人脸比对服务")
 @RestController("visualFaceCompareController")
@@ -21,7 +20,7 @@ public class FaceCompareController extends FaceCompareControllerImpl {
     @Override
     @ResponseBody
     @RequestMapping(value = "/do", method = RequestMethod.POST)
-    public ResponseInfo<FaceCompareRepVo> faceCompare(FaceCompareReqVo compareReq) {
+    public ResponseInfo<FaceCompareRepVo> faceCompare(@RequestBody @Valid FaceCompareReqVo compareReq) {
         return super.faceCompare(compareReq);
     }
 }
