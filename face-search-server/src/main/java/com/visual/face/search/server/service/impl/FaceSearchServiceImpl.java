@@ -86,8 +86,22 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
         }
         //结果和人数是否一致
         List<SearchResult> result = searchResponse.getResult();
-        if(result.size() != faceInfos.size()){
+        if(result.size() > 0 && result.size() != faceInfos.size()){
             throw new RuntimeException("search result error");
+        }
+        //如数据库中没有任何样本的情况下，会出现异常，这里进行单独处理
+        if(result.size() == 0 && faceInfos.size() > 0){
+            List<FaceSearchRepVo> vos = new ArrayList<>();
+            for(int i=0; i<faceInfos.size(); i++) {
+                FaceInfo.FaceBox box = faceInfos.get(i).box;
+                FaceSearchRepVo vo = FaceSearchRepVo.build();
+                vo.setLocation(FaceLocation.build(box.leftTop.x, box.leftTop.y, box.width(), box.height()));
+                vo.setFaceScore((float) Math.floor(faceInfos.get(i).score * 1000000) / 10000);
+                List<SampleFaceVo> match = new ArrayList<>();
+                vo.setMatch(match);
+                vos.add(vo);
+            }
+            return vos;
         }
         //获取关联数据ID
         boolean needFixFaceId = false;
