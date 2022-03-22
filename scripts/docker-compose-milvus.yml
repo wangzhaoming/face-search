@@ -14,6 +14,8 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes-face-search/mysql:/var/lib/mysql
+    ports:
+      - "43306:3306"
     restart: always
 
   visual-etcd:
@@ -46,15 +48,15 @@ services:
 
   visual-milvus:
     container_name: face-search-milvus-standalone
-    image: milvusdb/milvus:v2.0.0-rc8-20211104-d1f4106
+    image: milvusdb/milvus:v2.0.1
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: visual-etcd:2379
       MINIO_ADDRESS: visual-minio:9000
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes-face-search/milvus:/var/lib/milvus
-#    ports:
-#      - "19530:19530"
+    ports:
+      - "19530:19530"
     depends_on:
       - "visual-etcd"
       - "visual-minio"
