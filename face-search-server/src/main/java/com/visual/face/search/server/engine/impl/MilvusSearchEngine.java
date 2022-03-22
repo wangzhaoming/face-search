@@ -175,7 +175,7 @@ public class MilvusSearchEngine implements SearchEngine {
                 SearchResultsWrapper wrapper = new SearchResultsWrapper(response.getData().getResults());
                 for (int i = 0; i < features.length; ++i) {
                     List<SearchDocument> documents = new ArrayList<>();
-                    List<SearchResultsWrapper.IDScore> scores = wrapper.GetIDScore(i);
+                    List<SearchResultsWrapper.IDScore> scores = wrapper.getIDScore(i);
                     for(SearchResultsWrapper.IDScore scoreId : scores){
                         long primaryKey = scoreId.getLongID();
                         float score = scoreId.getScore();
