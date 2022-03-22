@@ -16,8 +16,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class FaceSearchExample {
 
     static{ nu.pattern.OpenCV.loadShared(); }
-
+    //本地开发模式
     public static String serverHost = "http://127.0.0.1:8080";
+    //docker部署模式
+    //public static String serverHost = "http://127.0.0.1:56789";
     public static String namespace = "namespace_1";
     public static String collectionName = "collect_20211201_v05";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);

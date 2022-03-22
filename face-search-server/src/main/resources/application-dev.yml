@@ -45,10 +45,10 @@ visual:
   engine:
     selected: milvus
     proxima:
-      host: 172.16.36.229
+      host: visual_face_search_proxima
       port: 16000
     milvus:
-      host: 172.16.36.229
+      host: visual_face_search_milvus
       port: 19530
   swagger:
     enable: true
@@ -72,9 +72,9 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://172.16.36.228:3306/visual_face_search?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: model
-        password: Model123!@#
+        url: jdbc:mysql://visual_face_search_mysql:3306/visual_face_search?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: visual
+        password: visual
       slave:
         # 从数据源开关/默认关闭
         enabled: false
