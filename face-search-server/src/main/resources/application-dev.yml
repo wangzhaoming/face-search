@@ -45,10 +45,10 @@ visual:
   engine:
     selected: milvus
     proxima:
-      host: visual_face_search_proxima
+      host: visual-face-search-proxima
       port: 16000
     milvus:
-      host: visual_face_search_milvus
+      host: visual-face-search-milvus
       port: 19530
   swagger:
     enable: true
@@ -72,7 +72,7 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://visual_face_search_mysql:3306/visual_face_search?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        url: jdbc:mysql://visual-face-search-mysql:3306/visual_face_search?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: visual
         password: visual
       slave:
