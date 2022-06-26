@@ -20,6 +20,8 @@ public class FaceSearchExample {
     public static String serverHost = "http://127.0.0.1:8080";
     //docker部署模式
     //public static String serverHost = "http://127.0.0.1:56789";
+    //远程测试服务
+    //public static String serverHost = "http://face-search.diven.nat300.top";
     public static String namespace = "namespace_1";
     public static String collectionName = "collect_20211201_v05";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);
@@ -113,8 +115,8 @@ public class FaceSearchExample {
 
     /**main**/
     public static void main(String[] args) {
-        collect();
-        index();
+//        collect();
+//        index();
         search();
     }
 
