@@ -105,9 +105,13 @@
 
 ### 项目演示
 
-* 测试用例：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
+* 1.1.0 测试用例：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
 
 * ![输入图片说明](scripts/images/validate.jpg)
+
+* 1.2.0 测试用例(做了优化，增强了搜索结果的区分度)：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
+
+* ![输入图片说明](scripts/images/validate-1.2.0.jpg)
 
 ### 交流群
 
