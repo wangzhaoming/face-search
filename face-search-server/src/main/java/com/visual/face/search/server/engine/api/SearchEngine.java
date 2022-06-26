@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface SearchEngine {
 
+    public Object getEngine();
+
     public boolean exist(String collectionName);
 
     public boolean dropCollection(String collectionName);

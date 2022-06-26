@@ -57,6 +57,7 @@ public class CollectServiceImpl extends BaseService implements CollectService {
         //表名称
         String sampleTableName = StringUtils.join(prefixName, CHAR_UNDERLINE, "sample");
         String faceTableName   = StringUtils.join(prefixName, CHAR_UNDERLINE, "face");
+        String imageTableName  = StringUtils.join(prefixName, CHAR_UNDERLINE, "image");
         String vectorTableName = StringUtils.join(prefixName, CHAR_UNDERLINE, "vector");
         //判断表是否存在
         if(operateTableService.exist(sampleTableName)){
@@ -64,6 +65,9 @@ public class CollectServiceImpl extends BaseService implements CollectService {
         }
         if(operateTableService.exist(faceTableName)){
             throw new RuntimeException("face table is exist");
+        }
+        if(operateTableService.exist(imageTableName)){
+            throw new RuntimeException("image table is exist");
         }
         if(searchEngine.exist(vectorTableName)){
             throw new RuntimeException("vector table is exist");
@@ -80,6 +84,11 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             if(!createFaceFlag){
                 throw new RuntimeException("create face table error");
             }
+            //创建图像数据表
+            boolean createImageFlag = operateTableService.createImageTable(imageTableName);
+            if(!createImageFlag){
+                throw new RuntimeException("create image table error");
+            }
             //创建人脸向量库
             MapParam param = MapParam.build()
                     .put(Constant.ParamKeyShardsNum, collect.getShardsNum())
@@ -92,6 +101,7 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             //删除创建的表
             operateTableService.dropTable(sampleTableName);
             operateTableService.dropTable(faceTableName);
+            operateTableService.dropTable(imageTableName);
             searchEngine.dropCollection(vectorTableName);
             throw new RuntimeException(e);
         }
@@ -108,6 +118,7 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             insertCollection.setStatue(CollectionStatue.NORMAL.getValue());
             insertCollection.setSampleTable(sampleTableName);
             insertCollection.setFaceTable(faceTableName);
+            insertCollection.setImageTable(imageTableName);
             insertCollection.setVectorTable(vectorTableName);
             insertCollection.setSchemaInfo(JsonUtil.toSimpleString(collect));
             int flag = collectMapper.insert(insertCollection);
@@ -122,6 +133,7 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             if(hasError){
                 operateTableService.dropTable(sampleTableName);
                 operateTableService.dropTable(faceTableName);
+                operateTableService.dropTable(imageTableName);
                 searchEngine.dropCollection(vectorTableName);
             }
         }
@@ -141,6 +153,9 @@ public class CollectServiceImpl extends BaseService implements CollectService {
         ThreadUtil.run(() -> {
             operateTableService.dropTable(collection.getSampleTable());
             operateTableService.dropTable(collection.getFaceTable());
+            if(StringUtils.isNotEmpty(collection.getImageTable())){
+                operateTableService.dropTable(collection.getImageTable());
+            }
             searchEngine.dropCollection(collection.getVectorTable());
         });
         //返回

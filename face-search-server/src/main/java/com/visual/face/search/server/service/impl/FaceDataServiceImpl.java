@@ -7,6 +7,9 @@ import com.visual.face.search.core.domain.ImageMat;
 import com.visual.face.search.core.extract.FaceFeatureExtractor;
 import com.visual.face.search.core.utils.JsonUtil;
 import com.visual.face.search.core.utils.Similarity;
+import com.visual.face.search.server.domain.storage.StorageDataInfo;
+import com.visual.face.search.server.domain.storage.StorageImageInfo;
+import com.visual.face.search.server.domain.storage.StorageInfo;
 import com.visual.face.search.server.domain.extend.FieldKeyValue;
 import com.visual.face.search.server.domain.extend.FieldKeyValues;
 import com.visual.face.search.server.domain.request.FaceDataReqVo;
@@ -22,11 +25,17 @@ import com.visual.face.search.server.mapper.SampleDataMapper;
 import com.visual.face.search.server.model.Collection;
 import com.visual.face.search.server.model.ColumnValue;
 import com.visual.face.search.server.model.FaceData;
+import com.visual.face.search.server.model.ImageData;
 import com.visual.face.search.server.service.api.FaceDataService;
+import com.visual.face.search.server.service.api.ImageDataService;
+import com.visual.face.search.server.service.api.StorageImageService;
 import com.visual.face.search.server.service.base.BaseService;
+import com.visual.face.search.server.utils.CollectionUtil;
 import com.visual.face.search.server.utils.TableUtils;
+import com.visual.face.search.server.utils.VTableCache;
 import com.visual.face.search.server.utils.ValueUtil;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +45,8 @@ import java.util.*;
 
 @Service("visualFaceDataService")
 public class FaceDataServiceImpl extends BaseService implements FaceDataService {
-
+    @Value("${visual.face-mask.face-search:false}")
+    private boolean faceMask;
     @Resource
     private SearchEngine searchEngine;
     @Resource
@@ -45,6 +55,8 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
     private FaceDataMapper faceDataMapper;
     @Resource
     private SampleDataMapper sampleDataMapper;
+    @Resource
+    private ImageDataService imageDataService;
     @Resource
     private FaceFeatureExtractor faceFeatureExtractor;
 
@@ -67,7 +79,7 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
             throw new RuntimeException("sample_id is not exist");
         }
         //获取特征向量
-        ExtParam extParam = ExtParam.build().setMask(true).setScoreTh(face.getFaceScoreThreshold() / 100).setIouTh(0);
+        ExtParam extParam = ExtParam.build().setMask(faceMask).setScoreTh(face.getFaceScoreThreshold() / 100).setIouTh(0);
         ImageMat imageMat = null;
         FaceImage faceImage = null;
         try {
@@ -93,7 +105,7 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
             for(Map<String, Object> item : faces){
                 String faceVectorStr = MapUtils.getString(item, Constant.ColumnNameFaceVector);
                 float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                float simVal = Similarity.cosineSimilarity(embeds, faceVector);
+                float simVal = Similarity.cosineSimilarityNorm(embeds, faceVector);
                 float confidence = (float) Math.floor(simVal * 10000)/100;
                 if(confidence < face.getMinConfidenceThresholdWithThisSample()){
                     throw new RuntimeException("this face confidence is less than minConfidenceThresholdWithThisSample,confidence="+confidence+",threshold="+face.getMinConfidenceThresholdWithThisSample());
@@ -122,12 +134,33 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
                 for(Map<String, Object> item : faces){
                     String faceVectorStr = MapUtils.getString(item, Constant.ColumnNameFaceVector);
                     float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                    float simVal = Similarity.cosineSimilarity(embeds, faceVector);
+                    float simVal = Similarity.cosineSimilarityNorm(embeds, faceVector);
                     float confidence = (float) Math.floor(simVal * 10000)/100;
                     if(confidence > face.getMaxConfidenceThresholdWithOtherSample()){
                         throw new RuntimeException("this face confidence is gather than maxConfidenceThresholdWithOtherSample,confidence="+confidence+",threshold="+face.getMaxConfidenceThresholdWithOtherSample());
                     }
                 }
+            }
+        }
+        //保存图片信息并获取图片存储
+        StorageInfo storageInfo = CollectionUtil.getStorageInfo(collection.getSchemaInfo());
+        if(storageInfo.isStorageFaceInfo()){
+            //将数据保存到指定的数据引擎中
+            StorageImageInfo storageImageInfo = new StorageImageInfo(storageInfo.getStorageEngine(), face.getImageBase64(), faceInfo.embedding.image, JsonUtil.toString(faceInfo));
+            StorageDataInfo storageDataInfo = StorageImageService.Factory.create(storageImageInfo);
+            //插入数据记录
+            ImageData imageData = new ImageData();
+            imageData.setSampleId(face.getSampleId());
+            imageData.setFaceId(faceId);
+            imageData.setStorageType(storageInfo.getStorageEngine().name());
+            imageData.setImageRawInfo(storageDataInfo.getImageRawInfo());
+            imageData.setImageEbdInfo(storageDataInfo.getImageEbdInfo());
+            imageData.setImageFaceInfo(storageDataInfo.getImageFaceInfo());
+            imageData.setCreateTime(new Date());
+            imageData.setModifyTime(new Date());
+            boolean flag = imageDataService.insert(collection.getImageTable(), imageData);
+            if(!flag){
+                throw new RuntimeException("save face image data error");
             }
         }
         //获取数据类型
@@ -159,6 +192,8 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
         if(!flag1){
             throw new RuntimeException("create face vector error");
         }
+        //将队列写入到队列中
+        VTableCache.put(collection.getVectorTable());
         //构造返回
         FaceDataRepVo vo = FaceDataRepVo.build(face.getNamespace(), face.getCollectionName(), face.getSampleId(), faceId);
         vo.setFaceScore(faceInfo.score * 100);
@@ -187,6 +222,8 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
         if(!delete){
             throw new RuntimeException("delete face vector error");
         }
+        //将队列写入到队列中
+        VTableCache.put(collection.getVectorTable());
         //删除数据
         int flag = faceDataMapper.deleteByFaceId(collection.getFaceTable(), sampleId, faceId);
         return flag > 0;

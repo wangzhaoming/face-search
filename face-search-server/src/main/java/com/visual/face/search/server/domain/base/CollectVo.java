@@ -1,5 +1,6 @@
 package com.visual.face.search.server.domain.base;
 
+import com.visual.face.search.server.domain.storage.StorageEngine;
 import com.visual.face.search.server.domain.extend.FiledColumn;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
@@ -39,8 +40,14 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     @ApiModelProperty(value="自定义的人脸属性字段", position = 6,required = false)
     private List<FiledColumn> faceColumns = new ArrayList<>();
     /**启用binlog同步**/
-    @ApiModelProperty(value="启用binlog同步。扩展字段，暂不支持该功能。", position = 7,required = false)
+    @ApiModelProperty(value="启用binlog同步。扩展字段，暂不支持该功能", position = 7,required = false)
     private Boolean syncBinLog;
+    /**是否保留图片及人脸信息**/
+    @ApiModelProperty(value="是否保留图片及人脸信息", position = 8,required = false)
+    private Boolean storageFaceInfo;
+    /**保留图片及人脸信息的存储组件**/
+    @ApiModelProperty(value="保留图片及人脸信息的存储组件", position = 9,required = false)
+    private StorageEngine storageEngine;
 
     /**
      * 构建集合对象
@@ -125,6 +132,28 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
 
     public ExtendsVo setSyncBinLog(Boolean syncBinLog) {
         this.syncBinLog = syncBinLog;
+        return (ExtendsVo) this;
+    }
+
+    public boolean getStorageFaceInfo() {
+        return null == storageFaceInfo ? false : storageFaceInfo;
+    }
+
+    public ExtendsVo setStorageFaceInfo(Boolean storageFaceInfo) {
+        if(null != storageFaceInfo){
+            this.storageFaceInfo = storageFaceInfo;
+        }
+        return (ExtendsVo) this;
+    }
+
+    public StorageEngine getStorageEngine() {
+        return storageEngine;
+    }
+
+    public ExtendsVo setStorageEngine(StorageEngine storageEngine) {
+        if(null != storageEngine){
+            this.storageEngine = storageEngine;
+        }
         return (ExtendsVo) this;
     }
 }

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `visual_collection` (
   `statue` int DEFAULT NULL COMMENT '集合状态',
   `sample_table` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '样本数据表',
   `face_table` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '人脸数据表',
+  `image_table` varchar(64)  CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '图片数据信息',
   `vector_table` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '人脸向量库',
   `schema_info` longtext CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '集合元数据信息',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

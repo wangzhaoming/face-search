@@ -18,6 +18,7 @@ public interface CollectMapper {
                 "statue,",
                 "sample_table,",
                 "face_table,",
+                "image_table,",
                 "vector_table,",
                 "schema_info",
              ")",
@@ -25,8 +26,8 @@ public interface CollectMapper {
                 "#{uuid,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, ",
                 "#{collection,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, ",
                 "#{statue,jdbcType=INTEGER}, #{sampleTable,jdbcType=VARCHAR}, ",
-                "#{faceTable,jdbcType=VARCHAR}, #{vectorTable,jdbcType=VARCHAR}, ",
-                "#{schemaInfo,jdbcType=VARCHAR}",
+                "#{faceTable,jdbcType=VARCHAR},  #{imageTable,jdbcType=VARCHAR},",
+                "#{vectorTable,jdbcType=VARCHAR},#{schemaInfo,jdbcType=VARCHAR}",
             ")"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
@@ -47,7 +48,7 @@ public interface CollectMapper {
 
     @Select({
             "select",
-            "id, uuid, namespace, `collection`, `describe`, statue, sample_table, face_table, ",
+            "id, uuid, namespace, `collection`, `describe`, statue, sample_table, face_table, image_table, ",
             "vector_table, schema_info, create_time, update_time, deleted",
             "from visual_collection",
             "where 1=1 ",
@@ -64,6 +65,7 @@ public interface CollectMapper {
             @Result(column="statue", property="statue", jdbcType=JdbcType.INTEGER),
             @Result(column="sample_table", property="sampleTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="face_table", property="faceTable", jdbcType=JdbcType.VARCHAR),
+            @Result(column="image_table", property="imageTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="vector_table", property="vectorTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="schema_info", property="schemaInfo", jdbcType=JdbcType.VARCHAR),
             @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),
@@ -74,7 +76,7 @@ public interface CollectMapper {
 
     @Select({
             "select",
-            "id, uuid, namespace, `collection`, `describe`, statue, sample_table, face_table, ",
+            "id, uuid, namespace, `collection`, `describe`, statue, sample_table, face_table, image_table, ",
             "vector_table, schema_info, create_time, update_time, deleted",
             "from visual_collection",
             "where 1=1 ",
@@ -89,6 +91,7 @@ public interface CollectMapper {
             @Result(column="statue", property="statue", jdbcType=JdbcType.INTEGER),
             @Result(column="sample_table", property="sampleTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="face_table", property="faceTable", jdbcType=JdbcType.VARCHAR),
+            @Result(column="image_table", property="imageTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="vector_table", property="vectorTable", jdbcType=JdbcType.VARCHAR),
             @Result(column="schema_info", property="schemaInfo", jdbcType=JdbcType.VARCHAR),
             @Result(column="create_time", property="createTime", jdbcType=JdbcType.TIMESTAMP),

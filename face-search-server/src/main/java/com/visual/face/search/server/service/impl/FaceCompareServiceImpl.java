@@ -11,6 +11,7 @@ import com.visual.face.search.server.domain.extend.FaceLocation;
 import com.visual.face.search.server.domain.request.FaceCompareReqVo;
 import com.visual.face.search.server.domain.response.FaceCompareRepVo;
 import com.visual.face.search.server.service.api.FaceCompareService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +20,9 @@ import java.util.List;
 
 @Service("visualFaceCompareServiceImpl")
 public class FaceCompareServiceImpl implements FaceCompareService {
+
+    @Value("${visual.face-mask.face-compare:false}")
+    private boolean faceMask;
 
     @Resource
     private FaceFeatureExtractor faceFeatureExtractor;
@@ -35,7 +39,7 @@ public class FaceCompareServiceImpl implements FaceCompareService {
             throw new RuntimeException("Image B is not face");
         }
         //计算余弦相似度
-        float simVal = Similarity.cosineSimilarity(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
+        float simVal = Similarity.cosineSimilarityNorm(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
         float confidence = (float) Math.floor(simVal * 1000000)/10000;
         //欧式距离
         float euclideanDistance = Similarity.euclideanDistance(faceInfoA.embedding.embeds, faceInfoB.embedding.embeds);
@@ -70,7 +74,7 @@ public class FaceCompareServiceImpl implements FaceCompareService {
         faceScoreThreshold = faceScoreThreshold > 100 ? 100 : faceScoreThreshold;
         faceScoreThreshold = faceScoreThreshold > 1 ? faceScoreThreshold / 100 : faceScoreThreshold;
 
-        ExtParam extParam = ExtParam.build().setMask(true).setScoreTh(faceScoreThreshold).setIouTh(0).setTopK(1);
+        ExtParam extParam = ExtParam.build().setMask(faceMask).setScoreTh(faceScoreThreshold).setIouTh(0).setTopK(1);
         ImageMat imageMat = null;
         FaceImage faceImage = null;
         try {

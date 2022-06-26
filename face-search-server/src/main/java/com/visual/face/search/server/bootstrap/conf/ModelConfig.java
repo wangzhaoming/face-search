@@ -169,7 +169,7 @@ public class ModelConfig {
         }
 
         if((null == modelPath || modelPath.length != 1) && "InsightArcFaceRecognition".equalsIgnoreCase(modelName)){
-            return new String[]{basePath + "model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx"};
+            return new String[]{basePath + "model/onnx/recognition_face_arc/glint360k_cosface_r50_fp16_0.1.onnx"};
         }
 
         return modelPath;

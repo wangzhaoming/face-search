@@ -30,6 +30,11 @@ public class OperateTableServiceImpl implements OperateTableService {
     }
 
     @Override
+    public boolean createImageTable(String table) {
+        return operateTableMapper.createImageTable(table) >= 0;
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public boolean createSampleTable(String table, List<TableColumn> columns) {
         if(null == columns){

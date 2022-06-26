@@ -26,13 +26,15 @@ import com.visual.face.search.server.service.api.FaceSearchService;
 import com.visual.face.search.server.service.base.BaseService;
 import com.visual.face.search.server.utils.ValueUtil;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 @Service("visualFaceSearchService")
 public class FaceSearchServiceImpl extends BaseService implements FaceSearchService {
-
+    @Value("${visual.face-mask.face-search:false}")
+    private boolean faceMask;
     @Resource
     private SearchEngine searchEngine;
     @Resource
@@ -56,7 +58,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
         }
         //获取特征向量
         int maxFaceNum = (null == search.getMaxFaceNum() || search.getMaxFaceNum()  <= 0) ? 5 : search.getMaxFaceNum();
-        ExtParam extParam = ExtParam.build().setMask(true).setScoreTh(search.getFaceScoreThreshold() / 100).setIouTh(0).setTopK(maxFaceNum);
+        ExtParam extParam = ExtParam.build().setMask(faceMask).setScoreTh(search.getFaceScoreThreshold() / 100).setIouTh(0).setTopK(maxFaceNum);
         ImageMat imageMat = null;
         FaceImage faceImage = null;
         try {
@@ -148,7 +150,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
                     String sampleId = MapUtils.getString(face, Constant.ColumnNameSampleId);
                     String faceVectorStr = MapUtils.getString(face, Constant.ColumnNameFaceVector);
                     float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                    float simVal = Similarity.cosineSimilarity(faceInfos.get(i).embedding.embeds, faceVector);
+                    float simVal = Similarity.cosineSimilarityNorm(faceInfos.get(i).embedding.embeds, faceVector);
                     float confidence = (float) Math.floor(simVal * 1000000)/10000;
                     if(null != sampleId && sampleMapping.containsKey(sampleId) && confidence >= search.getConfidenceThreshold()){
                         Map<String, Object> sample = sampleMapping.get(sampleId);

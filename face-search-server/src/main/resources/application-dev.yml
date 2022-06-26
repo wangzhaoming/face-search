@@ -16,18 +16,18 @@ server:
 # 日志配置
 logging:
   level:
-    com.visual.face.search: debug
+    com.visual.face.search: info
     org.springframework: warn
 
 # 模型配置
 visual:
   model:
     faceDetection:
-      name: PcnNetworkFaceDetection
+      name: InsightScrfdFaceDetection
       modelPath:
       thread: 1
       backup:
-        name: InsightScrfdFaceDetection
+        name: PcnNetworkFaceDetection
         modelPath:
         thread: 1
     faceKeyPoint:
@@ -35,7 +35,7 @@ visual:
       modelPath:
       thread: 1
     faceAlignment:
-      name: Simple106pFaceAlignment
+      name: Simple005pFaceAlignment
       modelPath:
       thread: 1
     faceRecognition:
@@ -50,6 +50,13 @@ visual:
     milvus:
       host: visual-face-search-milvus
       port: 19530
+  scheduler:
+    flush:
+      enable: true
+      interval: 60000
+  face-mask:
+    face-search: false
+    face-compare: false
   swagger:
     enable: true
 

@@ -1,5 +1,8 @@
 package com.visual.face.search.core.utils;
 
+import org.apache.commons.math3.linear.RealMatrix;
+import static com.visual.face.search.core.utils.ArrayUtil.matrixNorm;
+
 public class Similarity {
 
     /**
@@ -50,6 +53,27 @@ public class Similarity {
             throw new RuntimeException("vector length not equal");
         }
         return (float) distance;
+    }
+
+    /**
+     * 向量余弦相似度,加入了norm变换
+     * @param leftVector
+     * @param rightVector
+     * @return
+     */
+    public static float cosineSimilarityNorm(float[] leftVector, float[] rightVector) {
+        RealMatrix rm1 = MathUtil.createMatrix(1, ArrayUtil.floatToDouble(leftVector));
+        RealMatrix rm2 = MathUtil.createMatrix(1, ArrayUtil.floatToDouble(rightVector));
+        RealMatrix num = rm1.multiply(rm2.transpose());
+        double deco = matrixNorm(rm1.getData()) * matrixNorm(rm2.getData());
+        double cos = num.getEntry(0, 0) / deco;
+        double sim = cos;
+        if(cos >= 0.5){
+            sim = cos + 2 * (cos - 0.5) * (1 - cos);
+        }else if(cos >= 0){
+            sim = cos - 2 * (cos - 0.5) * (0 - cos);
+        }
+        return Double.valueOf(sim).floatValue();
     }
 
 }

@@ -44,6 +44,11 @@ public class Collection {
     private String faceTable;
 
     /**
+     *	图片数据表
+     */
+    private String imageTable;
+
+    /**
      *	人脸向量库
      */
     private String vectorTable;
@@ -194,6 +199,22 @@ public class Collection {
      */
     public void setFaceTable(String faceTable) {
         this.faceTable = faceTable == null ? null : faceTable.trim();
+    }
+
+    /**
+     *	图片数据表
+     *	@return image_table 图片数据表
+     */
+    public String getImageTable() {
+        return imageTable;
+    }
+
+    /**
+     *	图片数据表
+     *	@param imageTable 图片数据表
+     */
+    public void setImageTable(String imageTable) {
+        this.imageTable = imageTable == null ? null : imageTable.trim();
     }
 
     /**

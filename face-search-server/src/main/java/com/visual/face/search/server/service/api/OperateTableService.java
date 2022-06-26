@@ -11,6 +11,8 @@ public interface OperateTableService {
 
     boolean dropTable(String table);
 
+    boolean createImageTable(String table);
+
     boolean createSampleTable(String table, List<TableColumn> columns);
 
     boolean createFaceTable(String table, List<TableColumn> columns);

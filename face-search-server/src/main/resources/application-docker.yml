@@ -23,11 +23,11 @@ logging:
 visual:
   model:
     faceDetection:
-      name: PcnNetworkFaceDetection
+      name: InsightScrfdFaceDetection
       modelPath:
       thread: 4
       backup:
-        name: InsightScrfdFaceDetection
+        name: PcnNetworkFaceDetection
         modelPath:
         thread: 4
     faceKeyPoint:
@@ -35,7 +35,7 @@ visual:
       modelPath:
       thread: 4
     faceAlignment:
-      name: Simple106pFaceAlignment
+      name: Simple005pFaceAlignment
       modelPath:
       thread: 4
     faceRecognition:
@@ -50,6 +50,13 @@ visual:
     milvus:
       host:
       port: 19530
+  scheduler:
+    flush:
+      enable: true
+      interval: 60000
+  face-mask:
+    face-search: false
+    face-compare: false
   swagger:
     enable: true
 

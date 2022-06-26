@@ -14,6 +14,10 @@ public class ServerConfig {
     public static class MapperConfig {}
 
     @Configuration
+    @ComponentScan("com.visual.face.search.server.utils")
+    public static class SearchUtils {}
+
+    @Configuration
     @ComponentScan("com.visual.face.search.server.config")
     public static class SearchConfig {}
 
@@ -25,4 +29,7 @@ public class ServerConfig {
     @ComponentScan({"com.visual.face.search.server.controller"})
     public static class ControllerConfig {}
 
+    @Configuration
+    @ComponentScan({"com.visual.face.search.server.scheduler"})
+    public static class SchedulerConfig {}
 }

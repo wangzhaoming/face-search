@@ -17,6 +17,7 @@ public class Api {
     public static final String face_create = "/visual/face/create";
 
     public static final String visual_search = "/visual/search/do";
+    public static final String visual_compare = "/visual/compare/do";
 
     public static String getUrl(String host, String uri){
         host = host.replaceAll ("/+$", "");

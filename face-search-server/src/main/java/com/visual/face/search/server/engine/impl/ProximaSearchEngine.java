@@ -20,6 +20,11 @@ public class ProximaSearchEngine implements SearchEngine {
     }
 
     @Override
+    public Object getEngine(){
+        return this.client;
+    }
+
+    @Override
     public boolean exist(String collectionName) {
         DescribeCollectionResponse response = client.describeCollection(collectionName);
         return response.ok();

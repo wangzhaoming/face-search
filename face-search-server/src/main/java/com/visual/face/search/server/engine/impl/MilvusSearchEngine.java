@@ -4,7 +4,7 @@ import com.visual.face.search.server.engine.api.SearchEngine;
 import com.visual.face.search.server.engine.conf.Constant;
 import com.visual.face.search.server.engine.model.*;
 import com.visual.face.search.server.engine.utils.VectorUtils;
-import io.milvus.Response.SearchResultsWrapper;
+import io.milvus.response.SearchResultsWrapper;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.*;
 import io.milvus.param.*;
@@ -13,6 +13,7 @@ import io.milvus.param.dml.DeleteParam;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.param.dml.SearchParam;
 import io.milvus.param.index.CreateIndexParam;
+
 import java.util.*;
 
 public class MilvusSearchEngine implements SearchEngine {
@@ -23,6 +24,11 @@ public class MilvusSearchEngine implements SearchEngine {
 
     public MilvusSearchEngine(MilvusServiceClient client) {
         this.client = client;
+    }
+
+    @Override
+    public Object getEngine(){
+        return this.client;
     }
 
     @Override
@@ -161,12 +167,12 @@ public class MilvusSearchEngine implements SearchEngine {
         SearchParam searchParam = SearchParam.newBuilder()
                 .withCollectionName(collectionName)
                 .withMetricType(MetricType.L2)
+                .withParams("{\"nprobe\": 128}")
                 .withOutFields(Collections.singletonList(Constant.ColumnPrimaryKey))
                 .withTopK(topK)
                 .withVectors(VectorUtils.convertVector(features))
                 .withVectorFieldName(Constant.ColumnNameFaceIndex)
                 .build();
-
         R<SearchResults> response = this.client.search(searchParam);
         if(SUCCESS_STATUE.equals(response.getStatus())){
             SearchStatus status = SearchStatus.build(0, "success");
