@@ -48,7 +48,7 @@ services:
 
   visual-milvus:
     container_name: face-search-milvus-standalone
-    image: milvusdb/milvus:v2.0.1
+    image: milvusdb/milvus:v2.0.2
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: visual-etcd:2379
