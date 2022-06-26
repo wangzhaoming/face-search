@@ -22,6 +22,9 @@ public class FaceCompareExample {
     public static String serverHost = "http://127.0.0.1:8080";
     //docker部署模式
     //public static String serverHost = "http://127.0.0.1:56789";
+    //远程测试服务
+    //public static String serverHost = "http://face-search.diven.nat300.top";
+
     public static FaceCompare faceSearch = FaceCompare.build(serverHost);
 
     /**搜索*/
