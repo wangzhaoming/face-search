@@ -2,19 +2,15 @@ package com.visual.face.search.core.extract;
 
 import java.util.List;
 import java.util.Map;
-
-import com.visual.face.search.core.base.FaceAlignment;
-import com.visual.face.search.core.base.FaceDetection;
-import com.visual.face.search.core.base.FaceKeyPoint;
-import com.visual.face.search.core.base.FaceRecognition;
+import org.opencv.core.Mat;
+import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.domain.ExtParam;
 import com.visual.face.search.core.domain.FaceImage;
 import com.visual.face.search.core.domain.FaceInfo;
 import com.visual.face.search.core.domain.ImageMat;
-import com.visual.face.search.core.models.InsightCoordFaceKeyPoint;
 import com.visual.face.search.core.utils.CropUtil;
 import com.visual.face.search.core.utils.MaskUtil;
-import org.opencv.core.Mat;
+import com.visual.face.search.core.models.InsightCoordFaceKeyPoint;
 
 /**
  * 人脸特征提取器实现
@@ -28,6 +24,7 @@ public class FaceFeatureExtractorImpl implements FaceFeatureExtractor {
     private FaceAlignment faceAlignment;
     private FaceRecognition faceRecognition;
     private FaceDetection backupFaceDetection;
+    private FaceAttribute faceAttribute;
 
     /**
      * 构造函数
@@ -37,10 +34,14 @@ public class FaceFeatureExtractorImpl implements FaceFeatureExtractor {
      * @param faceAlignment         人脸对齐模型
      * @param faceRecognition       人脸特征提取模型
      */
-    public FaceFeatureExtractorImpl(FaceDetection faceDetection, FaceDetection backupFaceDetection, FaceKeyPoint faceKeyPoint, FaceAlignment faceAlignment, FaceRecognition faceRecognition) {
+    public FaceFeatureExtractorImpl(
+            FaceDetection faceDetection, FaceDetection backupFaceDetection,
+            FaceKeyPoint faceKeyPoint, FaceAlignment faceAlignment,
+            FaceRecognition faceRecognition, FaceAttribute faceAttribute) {
         this.faceKeyPoint = faceKeyPoint;
         this.faceDetection = faceDetection;
         this.faceAlignment = faceAlignment;
+        this.faceAttribute = faceAttribute;
         this.faceRecognition = faceRecognition;
         this.backupFaceDetection = backupFaceDetection;
     }
@@ -71,13 +72,19 @@ public class FaceFeatureExtractorImpl implements FaceFeatureExtractor {
             ImageMat cropImageMat = null;
             ImageMat alignmentImage = null;
             try {
-                //缩放人脸框的比例
-                float scaling = extParam.getScaling() <= 0 ? defScaling : extParam.getScaling();
                 //通过旋转角度获取正脸坐标，并进行图像裁剪
-                FaceInfo.FaceBox box = faceInfo.rotateFaceBox().scaling(scaling);
-                cropFace = CropUtil.crop(image.toCvMat(), box);
-                //人脸标记关键点
+                FaceInfo.FaceBox rotateFaceBox = faceInfo.rotateFaceBox();
+                cropFace = CropUtil.crop(image.toCvMat(), rotateFaceBox);
                 cropImageMat = ImageMat.fromCVMat(cropFace);
+                //人脸属性检测
+                FaceInfo.Attribute attribute = this.faceAttribute.inference(cropImageMat, params);
+                faceInfo.attribute = attribute;
+                //进行缩放人脸区域，并裁剪图片
+                float scaling = extParam.getScaling() <= 0 ? defScaling : extParam.getScaling();
+                FaceInfo.FaceBox box = rotateFaceBox.scaling(scaling);
+                cropFace = CropUtil.crop(image.toCvMat(), box);
+                cropImageMat = ImageMat.fromCVMat(cropFace);
+                //人脸标记关键点
                 FaceInfo.Points corpPoints = this.faceKeyPoint.inference(cropImageMat, params);
                 //还原原始图片中的关键点
                 FaceInfo.Point corpImageCenter = FaceInfo.Point.build((float)cropImageMat.center().x, (float)cropImageMat.center().y);

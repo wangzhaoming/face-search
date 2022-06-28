@@ -42,6 +42,10 @@ visual:
       name: InsightArcFaceRecognition
       modelPath:
       thread: 4
+    faceAttribute:
+      name: InsightAttributeDetection
+      modelPath:
+      thread: 4
   engine:
     selected: proxima
     proxima:

@@ -1,9 +1,6 @@
 package com.visual.face.search.core.test.extract;
 
-import com.visual.face.search.core.base.FaceAlignment;
-import com.visual.face.search.core.base.FaceDetection;
-import com.visual.face.search.core.base.FaceKeyPoint;
-import com.visual.face.search.core.base.FaceRecognition;
+import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.domain.ExtParam;
 import com.visual.face.search.core.domain.FaceImage;
 import com.visual.face.search.core.domain.FaceInfo;
@@ -24,6 +21,7 @@ public class FaceFeatureExtractOOMTest extends BaseTest {
     private static String modelScrfdPath = "face-search-core/src/main/resources/model/onnx/detection_face_scrfd/scrfd_500m_bnkps.onnx";
     private static String modelCoordPath = "face-search-core/src/main/resources/model/onnx/keypoint_coordinate/coordinate_106_mobilenet_05.onnx";
     private static String modelArcPath = "face-search-core/src/main/resources/model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx";
+    private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
 //    private static String imagePath = "face-search-core/src/test/resources/images/faces";
     private static String imagePath = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
@@ -47,7 +45,11 @@ public class FaceFeatureExtractOOMTest extends BaseTest {
         FaceAlignment simple005pFaceAlignment = new Simple005pFaceAlignment();
         FaceAlignment simple106pFaceAlignment = new Simple106pFaceAlignment();
         FaceDetection pcnNetworkFaceDetection = new PcnNetworkFaceDetection(new String[]{modelPcn1Path, modelPcn2Path, modelPcn3Path}, 1);
-        FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(insightScrfdFaceDetection, pcnNetworkFaceDetection, insightCoordFaceKeyPoint, simple106pFaceAlignment, insightArcFaceRecognition);
+        FaceAttribute insightFaceAttribute = new InsightAttributeDetection(modelArrPath, 1);
+
+        FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(
+                insightScrfdFaceDetection, pcnNetworkFaceDetection, insightCoordFaceKeyPoint,
+                simple106pFaceAlignment, insightArcFaceRecognition, insightFaceAttribute);
 //        FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(insightScrfdFaceDetection, insightCoordFaceKeyPoint, simple106pFaceAlignment, insightArcFaceRecognition);
         for (int i = 0; i < 100000; i++) {
             for (String fileName : map.keySet()) {

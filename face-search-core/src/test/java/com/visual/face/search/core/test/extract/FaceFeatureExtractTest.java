@@ -1,9 +1,6 @@
 package com.visual.face.search.core.test.extract;
 
-import com.visual.face.search.core.base.FaceAlignment;
-import com.visual.face.search.core.base.FaceDetection;
-import com.visual.face.search.core.base.FaceKeyPoint;
-import com.visual.face.search.core.base.FaceRecognition;
+import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.domain.ExtParam;
 import com.visual.face.search.core.domain.FaceImage;
 import com.visual.face.search.core.domain.FaceInfo;
@@ -31,9 +28,10 @@ public class FaceFeatureExtractTest extends BaseTest {
     private static String modelScrfdPath = "face-search-core/src/main/resources/model/onnx/detection_face_scrfd/scrfd_500m_bnkps.onnx";
     private static String modelCoordPath = "face-search-core/src/main/resources/model/onnx/keypoint_coordinate/coordinate_106_mobilenet_05.onnx";
     private static String modelArcPath = "face-search-core/src/main/resources/model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx";
+    private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
-
-    private static String imagePath = "face-search-core/src/test/resources/images/faces";
+//    private static String imagePath = "face-search-core/src/test/resources/images/faces";
+    private static String imagePath = "/Users/diven/workspace/python/kuainiu/beidou-spoofing/test/datas/eval_liveness_v1/real";
 
 
     public static void main(String[] args) {
@@ -44,7 +42,11 @@ public class FaceFeatureExtractTest extends BaseTest {
         FaceAlignment simple005pFaceAlignment = new Simple005pFaceAlignment();
         FaceAlignment simple106pFaceAlignment = new Simple106pFaceAlignment();
         FaceDetection pcnNetworkFaceDetection = new PcnNetworkFaceDetection(new String[]{modelPcn1Path, modelPcn2Path, modelPcn3Path}, 1);
-        FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(pcnNetworkFaceDetection, insightScrfdFaceDetection, insightCoordFaceKeyPoint, simple106pFaceAlignment, insightArcFaceRecognition);
+        FaceAttribute insightFaceAttribute = new InsightAttributeDetection(modelArrPath, 1);
+
+        FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(
+                pcnNetworkFaceDetection, insightScrfdFaceDetection, insightCoordFaceKeyPoint,
+                simple005pFaceAlignment, insightArcFaceRecognition, insightFaceAttribute);
         for(String fileName : map.keySet()){
             String imageFilePath = map.get(fileName);
             System.out.println(imageFilePath);
@@ -74,6 +76,11 @@ public class FaceFeatureExtractTest extends BaseTest {
                 Imgproc.circle(image, new Point(box1.rightTop.x, box1.rightTop.y), 3, new Scalar(0,0,255), -1);
                 Imgproc.circle(image, new Point(box1.rightBottom.x, box1.rightBottom.y), 3, new Scalar(0,0,255), -1);
                 Imgproc.circle(image, new Point(box1.leftBottom.x, box1.leftBottom.y), 3, new Scalar(0,0,255), -1);
+
+                FaceInfo.Attribute attribute = faceInfo.attribute;
+                Imgproc.putText(image, attribute.valueOfGender().name(), new Point(box.center().x-10, box.center().y), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
+                Imgproc.putText(image, ""+attribute.age, new Point(box.center().x-10, box.center().y+20), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
+
 
                 int pointNum = 1;
                 for(FaceInfo.Point keyPoint : faceInfo.points){

@@ -1,9 +1,6 @@
 package com.visual.face.search.server.bootstrap.conf;
 
-import com.visual.face.search.core.base.FaceAlignment;
-import com.visual.face.search.core.base.FaceDetection;
-import com.visual.face.search.core.base.FaceKeyPoint;
-import com.visual.face.search.core.base.FaceRecognition;
+import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.extract.FaceFeatureExtractor;
 import com.visual.face.search.core.extract.FaceFeatureExtractorImpl;
 import com.visual.face.search.core.models.*;
@@ -48,6 +45,16 @@ public class ModelConfig {
     private String[] faceRecognitionNameModel;
     @Value("${visual.model.faceRecognition.thread:4}")
     private Integer faceRecognitionNameThread;
+
+
+    @Value("${visual.model.faceAttribute.name:InsightAttributeDetection}")
+    private String faceAttributeDetectionName;
+    @Value("${visual.model.faceAttribute.modelPath}")
+    private String[] faceAttributeDetectionNameModel;
+    @Value("${visual.model.faceAttribute.thread:4}")
+    private Integer faceAttributeDetectionNameThread;
+
+
 
 
     /**
@@ -124,6 +131,19 @@ public class ModelConfig {
     }
 
     /**
+     * 人脸属性检测
+     * @return
+     */
+    @Bean(name = "visualAttributeDetection")
+    public InsightAttributeDetection getAttributeDetection(){
+        if(faceAttributeDetectionName.equalsIgnoreCase("InsightAttributeDetection")){
+            return new InsightAttributeDetection(getModelPath(faceAttributeDetectionName, faceAttributeDetectionNameModel)[0], faceAttributeDetectionNameThread);
+        }else{
+            return new InsightAttributeDetection(getModelPath(faceAttributeDetectionName, faceAttributeDetectionNameModel)[0], faceAttributeDetectionNameThread);
+        }
+    }
+
+    /**
      * 构建特征提取器
      * @param faceDetection     人脸识别模型
      * @param faceKeyPoint      人脸关键点模型
@@ -136,8 +156,13 @@ public class ModelConfig {
             @Qualifier("visualBackupFaceDetection")FaceDetection backupFaceDetection,
             @Qualifier("visualFaceKeyPoint")FaceKeyPoint faceKeyPoint,
             @Qualifier("visualFaceAlignment")FaceAlignment faceAlignment,
-            @Qualifier("visualFaceRecognition")FaceRecognition faceRecognition){
-        return new FaceFeatureExtractorImpl(faceDetection, backupFaceDetection, faceKeyPoint, faceAlignment, faceRecognition);
+            @Qualifier("visualFaceRecognition")FaceRecognition faceRecognition,
+            @Qualifier("visualAttributeDetection") FaceAttribute faceAttribute
+            ){
+        return new FaceFeatureExtractorImpl(
+                faceDetection, backupFaceDetection, faceKeyPoint,
+                faceAlignment, faceRecognition, faceAttribute
+        );
     }
 
     /**
@@ -170,6 +195,10 @@ public class ModelConfig {
 
         if((null == modelPath || modelPath.length != 1) && "InsightArcFaceRecognition".equalsIgnoreCase(modelName)){
             return new String[]{basePath + "model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx"};
+        }
+
+        if((null == modelPath || modelPath.length != 1) && "InsightAttributeDetection".equalsIgnoreCase(modelName)){
+            return new String[]{basePath + "model/onnx/attribute_gender_age/insight_gender_age.onnx"};
         }
 
         return modelPath;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public class FaceInfo implements Comparable<FaceInfo>, Serializable {
     /**人脸分数**/
     public float score;
@@ -15,6 +16,8 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
     public Points points;
     /**人脸特征向量**/
     public Embedding embedding;
+    /**人脸属性信息**/
+    public Attribute attribute;
 
     /**
      * 构造函数
@@ -333,7 +336,7 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
          * 判断当前的人脸框是否是标准的人脸框，即非旋转后的人脸框。
          * @return 否是标准的人脸框
          */
-        public boolean isNormal(){
+        public boolean normal(){
             if((int)leftTop.x == (int)leftBottom.x && (int)leftTop.y == (int)rightTop.y){
                 if((int)rightBottom.x == (int)rightTop.x && (int)rightBottom.y == (int)leftBottom.y){
                     return true;
@@ -444,6 +447,68 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
          */
         public static Embedding build(String image, float[] embeds){
             return new Embedding(image, embeds);
+        }
+    }
+
+    /**
+     * 人脸属性信息
+     */
+    public static class Attribute implements Serializable {
+        public Integer age;
+        public Integer gender;
+
+        /**
+         * 构造函数
+         * @param gender     前图片的base64编码值
+         * @param age        当前图片的人脸向量信息
+         */
+        private Attribute(Gender gender, Integer age) {
+            this.age = age;
+            this.gender = null == gender ? -1 : gender.getCode();
+        }
+
+        /**
+         * 获取枚举值
+         * @return
+         */
+        public Gender valueOfGender(){
+            return Gender.valueOf(this.gender);
+        }
+
+        /**
+         * 构建人脸属性信息
+         * @param gender     前图片的base64编码值
+         * @param age        当前图片的人脸向量信息
+         */
+        public static Attribute build(Gender gender, Integer age){
+            return new Attribute(gender, age);
+        }
+    }
+
+    public static enum  Gender {
+        MALE(0),        //男性
+        FEMALE(1),      //女性
+        UNKNOWN(-1);    //未知
+
+        private int code;
+
+        Gender(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return this.code;
+        }
+
+        public static Gender valueOf(Integer code) {
+            code = null == code ? -1 : code;
+            if(code == 0){
+                return MALE;
+            }
+            if(code == 1){
+                return FEMALE;
+            }
+            return UNKNOWN;
         }
     }
 }
