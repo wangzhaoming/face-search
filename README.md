@@ -87,19 +87,19 @@
 | 参数        | 描述   |  默认值  | 可选值|
 | --------   | -----:  | :----:  |--------|
 | VISUAL_SWAGGER_ENABLE                      | 是否开启swagger   	|   true      |                                    |
-| SPRING_DATASOURCE_URL                      | 数据库地址   		|             |                                    |
-| SPRING_DATASOURCE_USERNAME                 | 数据库用户名    		|             |                                    |
-| SPRING_DATASOURCE_PASSWORD                 | 数据库密码    		|             |                                    |
-| VISUAL_ENGINE_SELECTED                     | 向量存储引擎    		|  proxima    |proxima,milvus                      |
-| VISUAL_ENGINE_PROXIMA_HOST                 | PROXIMA地址   		|             |VISUAL_ENGINE_SELECTED=proxima时生效 |
-| VISUAL_ENGINE_PROXIMA_PORT                 | PROXIMA端口    		|  16000      |VISUAL_ENGINE_SELECTED=proxima时生效 |
-| VISUAL_ENGINE_MILVUS_HOST                  | MILVUS地址    		|             |VISUAL_ENGINE_SELECTED=milvus时生效  |
-| VISUAL_ENGINE_MILVUS_PORT                  | MILVUS端口    		|  19530      |VISUAL_ENGINE_SELECTED=milvus时生效  |
-| VISUAL_MODEL_FACEDETECTION_NAME            | 人脸检测模型名称    	|  PcnNetworkFaceDetection    |PcnNetworkFaceDetection，InsightScrfdFaceDetection                    |
-| VISUAL_MODEL_FACEDETECTION_BACKUP_NAME     | 备用人脸检测模型名称         | InsightScrfdFaceDetection  |PcnNetworkFaceDetection，InsightScrfdFaceDetection                    |
-| VISUAL_MODEL_FACEKEYPOINT_NAME             | 人脸关键点模型名称          | InsightCoordFaceKeyPoint  |InsightCoordFaceKeyPoint                    |
-| VISUAL_MODEL_FACEALIGNMENT_NAME            | 人脸对齐模型名称            | Simple106pFaceAlignment  |Simple106pFaceAlignment，Simple005pFaceAlignment                    |
-| VISUAL_MODEL_FACERECOGNITION_NAME          | 人脸特征提取模型名称         | InsightArcFaceRecognition  |InsightArcFaceRecognition                    |
+| SPRING_DATASOURCE_URL                      | 数据库地址   		    |             |                                    |
+| SPRING_DATASOURCE_USERNAME                 | 数据库用户名    		|   root      |                                    |
+| SPRING_DATASOURCE_PASSWORD                 | 数据库密码    		|   root      |                                    |
+| VISUAL_ENGINE_OPENSEARCH_HOST              | OPENSEARCH地址   		|             |                                    |
+| VISUAL_ENGINE_OPENSEARCH_PORT              | OPENSEARCH端口    	|  9200       |                                    |
+| VISUAL_ENGINE_OPENSEARCH_SCHEME            | OPENSEARCH协议    	|  https      |                                    |
+| VISUAL_ENGINE_OPENSEARCH_USERNAME          | OPENSEARCH用户名 		|  19530      |                                    |
+| VISUAL_ENGINE_OPENSEARCH_PASSWORD          | OPENSEARCH密码   		|  proxima    |                                    |
+| VISUAL_MODEL_FACEDETECTION_NAME            | 人脸检测模型名称    	|  PcnNetworkFaceDetection    |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
+| VISUAL_MODEL_FACEDETECTION_BACKUP_NAME     | 备用人脸检测模型名称    | InsightScrfdFaceDetection  |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
+| VISUAL_MODEL_FACEKEYPOINT_NAME             | 人脸关键点模型名称      | InsightCoordFaceKeyPoint  |InsightCoordFaceKeyPoint|
+| VISUAL_MODEL_FACEALIGNMENT_NAME            | 人脸对齐模型名称        | Simple106pFaceAlignment  |Simple106pFaceAlignment，Simple005pFaceAlignment|
+| VISUAL_MODEL_FACERECOGNITION_NAME          | 人脸特征提取模型名称    | InsightArcFaceRecognition  |InsightArcFaceRecognition|
 
 ### 性能优化
 
