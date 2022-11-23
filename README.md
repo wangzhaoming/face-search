@@ -37,7 +37,7 @@
 
 ### 项目文档
 
-* 在线文档：[文档-2.0.0](scripts/docs/2.0.0.md
+* 在线文档：[文档-2.0.0](scripts/docs/2.0.0.md)
 
 * swagger文档：启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
 
