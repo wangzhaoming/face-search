@@ -23,7 +23,7 @@ public class FaceSearchExample {
     //远程测试服务
     //public static String serverHost = "http://face-search.diven.nat300.top";
     public static String namespace = "namespace_1";
-    public static String collectionName = "collect_20211201_v05";
+    public static String collectionName = "collect_20211201_v10";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);
 
     /**集合创建*/
@@ -67,8 +67,8 @@ public class FaceSearchExample {
                         faceData.add(KeyValue.build("label", "标签-" + name));
                         String imageBase64 = Base64Util.encode(image.getAbsolutePath());
                         Face face = Face.build(sampleId).setFaceData(faceData).setImageBase64(imageBase64)
-                                .setMinConfidenceThresholdWithThisSample(0f)
-                                .setMaxConfidenceThresholdWithOtherSample(0f);
+                                .setMinConfidenceThresholdWithThisSample(50f)
+                                .setMaxConfidenceThresholdWithOtherSample(50f);
                         Response<FaceRep> createFace = faceSearch.face().createFace(face);
                         System.out.println("createFace:" + createFace);
                     }
@@ -82,8 +82,13 @@ public class FaceSearchExample {
         String searchPath = "face-search-test/src/main/resources/image/validate/search";
         for(File image : Objects.requireNonNull(new File(searchPath).listFiles())){
             String imageBase64 = Base64Util.encode(image.getAbsolutePath());
+            System.out.println(imageBase64);
             Long s = System.currentTimeMillis();
-            Response<List<SearchRep>> listResponse = faceSearch.search().search(Search.build(imageBase64).setMaxFaceNum(10).setLimit(1));
+            Response<List<SearchRep>> listResponse = faceSearch.search()
+                .search(Search.build(imageBase64)
+                .setConfidenceThreshold(50f)        //最小置信分：50
+                .setMaxFaceNum(10).setLimit(1)
+            );
             Long e = System.currentTimeMillis();
             System.out.println("search cost:" + (e-s)+"ms");
             System.out.println(JsonUtil.toString(listResponse, true, false));
@@ -95,13 +100,15 @@ public class FaceSearchExample {
                     FaceLocation location = rep.getLocation();
                     drawImage.drawRect(new DrawImage.Rect(location.getX(), location.getY(), location.getW(), location.getH()), 2, Color.RED);
                     List<SampleFace> faces = rep.getMatch();
-                    for(SampleFace face : faces){
-                        int distance = face.getDistance().intValue();
-                        int confidence = face.getConfidence().intValue();
-                        String name = face.getSampleData().getString("name");
-                        drawImage.drawText("姓名：" + name, new DrawImage.Point(location.getX() + 5, location.getY()+5), 14, Color.RED);
-                        drawImage.drawText("分数：" + confidence, new DrawImage.Point(location.getX()+5, location.getY()+25), 14, Color.RED);
-                        drawImage.drawText("距离：" + distance, new DrawImage.Point(location.getX()+5, location.getY()+50), 14, Color.RED);
+                    if(faces.size() > 0){
+                        for(SampleFace face : faces){
+                            int confidence = face.getConfidence().intValue();
+                            String name = face.getSampleData().getString("name");
+                            drawImage.drawText("姓名：" + name, new DrawImage.Point(location.getX() + 5, location.getY()+5), 14, Color.RED);
+                            drawImage.drawText("分数：" + confidence, new DrawImage.Point(location.getX()+5, location.getY()+25), 14, Color.RED);
+                        }
+                    }else{
+                        drawImage.drawText("未识别", new DrawImage.Point(location.getX() + 5, location.getY()+5), 14, Color.GREEN);
                     }
                 }
             }
@@ -115,8 +122,8 @@ public class FaceSearchExample {
 
     /**main**/
     public static void main(String[] args) {
-//        collect();
-//        index();
+        collect();
+        index();
         search();
     }
 

@@ -12,10 +12,10 @@ import com.visual.face.search.server.model.TableColumn;
 public interface OperateTableMapper {
 
     @Select({"SHOW TABLES LIKE '${table}'"})
-    String showTable(@Param("table")String table);
+    String showTable(@Param("table") String table);
 
     @Update({ "DROP TABLE IF EXISTS ${table}"})
-    int dropTable(@Param("table")String table);
+    int dropTable(@Param("table") String table);
 
     @Update({
         "<script>",

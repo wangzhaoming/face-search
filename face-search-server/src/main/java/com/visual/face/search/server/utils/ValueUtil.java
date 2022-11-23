@@ -1,9 +1,11 @@
 package com.visual.face.search.server.utils;
 
 import com.visual.face.search.core.utils.JsonUtil;
+import com.visual.face.search.engine.conf.Constant;
 import com.visual.face.search.server.domain.extend.FieldKeyValue;
 import com.visual.face.search.server.domain.extend.FieldKeyValues;
 import com.visual.face.search.server.domain.extend.FiledColumn;
+import com.visual.face.search.server.domain.extend.FiledDataType;
 import com.visual.face.search.server.domain.response.CollectRepVo;
 import com.visual.face.search.server.model.Collection;
 import org.apache.commons.collections4.MapUtils;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ValueUtil {
 
@@ -25,6 +28,7 @@ public class ValueUtil {
         return new ArrayList<>();
     }
 
+
     public static List<FiledColumn> getSampleColumns(Collection collection){
         if(null != collection.getSchemaInfo() && !collection.getSchemaInfo().isEmpty()){
             CollectRepVo collectVo = JsonUtil.toEntity(collection.getSchemaInfo(), CollectRepVo.class);
@@ -33,6 +37,19 @@ public class ValueUtil {
             }
         }
         return new ArrayList<>();
+    }
+
+    public static List<String> getAllFaceColumnNames(Collection collection){
+        List<FiledColumn> columns = getAllFaceColumns(collection);
+        return columns.stream().map(FiledColumn::getName).collect(Collectors.toList());
+    }
+
+    public static List<FiledColumn> getAllFaceColumns(Collection collection){
+        List<FiledColumn> columns = getFaceColumns(collection);
+        columns.add(FiledColumn.build().setName(Constant.ColumnNameSampleId).setComment("样本ID").setDataType(FiledDataType.STRING));
+        columns.add(FiledColumn.build().setName(Constant.ColumnNameFaceId).setComment("人脸ID").setDataType(FiledDataType.STRING));
+        columns.add(FiledColumn.build().setName(Constant.ColumnNameFaceScore).setComment("人脸分数").setDataType(FiledDataType.FLOAT));
+        return columns;
     }
 
     public static FieldKeyValues getFieldKeyValues(Map<String, Object> map , List<FiledColumn> columns){

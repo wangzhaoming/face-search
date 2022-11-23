@@ -42,7 +42,7 @@ public class InsightArcFaceRecognition  extends BaseOnnxInfer implements FaceRec
                     .to4dFloatOnnxTensorAndDoReleaseMat(true);
             output = getSession().run(Collections.singletonMap(getInputName(), tensor));
             float[][] embeds = (float[][]) output.get(0).getValue();
-            return FaceInfo.Embedding.build(image.toBase64AndNoReleaseMat(), embeds[0]);
+            return Embedding.build(image.toBase64AndNoReleaseMat(), embeds[0]);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {

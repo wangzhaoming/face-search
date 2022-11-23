@@ -30,13 +30,16 @@ public class FaceSearchReqVo extends BaseVo {
     @Range(min = -100, max = 100, message = "faceScoreThreshold is not in the range")
     @ApiModelProperty(value="人脸匹配分数阈值，范围：[-100,100]：默认0", position = 4, required = false)
     private Float confidenceThreshold = 0f;
+    /**选择搜索评分的算法，默认余弦相似度(COSINESIMIL)，可选参数：L1、L2、LINF、COSINESIMIL、INNERPRODUCT、HAMMINGBIT**/
+    @ApiModelProperty(hidden = true, value="选择搜索评分的算法，默认是余弦相似度(COSINESIMIL)，可选参数：L1、L2、LINF、COSINESIMIL、INNERPRODUCT、HAMMINGBIT", position = 5, required = false)
+    private String algorithm = SearchAlgorithm.COSINESIMIL.name();
     /**搜索条数：默认10**/
     @Min(value = 0, message = "limit must greater than or equal to 0")
-    @ApiModelProperty(value="最大搜索条数：默认5", position = 5, required = false)
+    @ApiModelProperty(value="最大搜索条数：默认5", position = 6, required = false)
     private Integer limit;
     /**对输入图像中多少个人脸进行检索比对**/
     @Min(value = 0, message = "maxFaceNum must greater than or equal to 0")
-    @ApiModelProperty(value="对输入图像中多少个人脸进行检索比对：默认5", position = 6, required = false)
+    @ApiModelProperty(value="对输入图像中多少个人脸进行检索比对：默认5", position = 7, required = false)
     private Integer maxFaceNum;
 
     /**
@@ -92,6 +95,21 @@ public class FaceSearchReqVo extends BaseVo {
 
     public FaceSearchReqVo setConfidenceThreshold(Float confidenceThreshold) {
         this.confidenceThreshold = confidenceThreshold;
+        return this;
+    }
+
+    public SearchAlgorithm getAlgorithm() {
+        if(null != algorithm && !algorithm.isEmpty()){
+            return SearchAlgorithm.valueOf(this.algorithm);
+        }else{
+            return SearchAlgorithm.COSINESIMIL;
+        }
+    }
+
+    public FaceSearchReqVo setAlgorithm(String algorithm) {
+        if(null != algorithm){
+            this.algorithm = algorithm;
+        }
         return this;
     }
 

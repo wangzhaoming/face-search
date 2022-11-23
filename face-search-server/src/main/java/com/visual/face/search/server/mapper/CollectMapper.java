@@ -44,7 +44,7 @@ public interface CollectMapper {
         "and namespace = #{namespace,jdbcType=VARCHAR} ",
         "and collection = #{collection,jdbcType=VARCHAR}"
     })
-    int deleteByName(@Param("namespace")String namespace, @Param("collection")String collection);
+    int deleteByName(@Param("namespace") String namespace, @Param("collection") String collection);
 
     @Select({
             "select",
@@ -72,7 +72,7 @@ public interface CollectMapper {
             @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
             @Result(column="deleted", property="deleted", jdbcType=JdbcType.CHAR)
     })
-    Collection selectByName(@Param("namespace")String namespace, @Param("collection")String collection);
+    Collection selectByName(@Param("namespace") String namespace, @Param("collection") String collection);
 
     @Select({
             "select",
@@ -98,5 +98,5 @@ public interface CollectMapper {
             @Result(column="update_time", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
             @Result(column="deleted", property="deleted", jdbcType=JdbcType.CHAR)
     })
-    List<Collection> selectByNamespace(@Param("namespace")String namespace);
+    List<Collection> selectByNamespace(@Param("namespace") String namespace);
 }

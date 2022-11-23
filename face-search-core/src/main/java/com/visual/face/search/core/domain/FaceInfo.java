@@ -123,9 +123,9 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
          * @return  旋转后的角
          */
         public Point rotation(Point center, float angle){
-            double k = new Float(Math.toRadians(angle));
-            float nx1 = new Float((this.x-center.x)*Math.cos(k) +(this.y-center.y)*Math.sin(k)+center.x);
-            float ny1 = new Float(-(this.x-center.x)*Math.sin(k) + (this.y-center.y)*Math.cos(k)+center.y);
+            double k = Math.toRadians(angle);
+            float nx1 = (float) ((this.x - center.x) * Math.cos(k) + (this.y - center.y) * Math.sin(k) + center.x);
+            float ny1 = (float) (-(this.x - center.x) * Math.sin(k) + (this.y - center.y) * Math.cos(k) + center.y);
             return new Point(nx1, ny1);
         }
 
