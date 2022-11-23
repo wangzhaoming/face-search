@@ -76,4 +76,20 @@ public class Similarity {
         return Double.valueOf(sim).floatValue();
     }
 
+    /**
+     * 对cos的原始值进行进行增强
+     * @param cos
+     * @return
+     */
+    public static float cosEnhance(float cos){
+        double sim = cos;
+        if(cos >= 0.5){
+            sim = cos + 2 * (cos - 0.5) * (1 - cos);
+        }else if(cos >= 0){
+            sim = cos - 2 * (cos - 0.5) * (0 - cos);
+        }
+        return Double.valueOf(sim).floatValue();
+    }
+
+
 }

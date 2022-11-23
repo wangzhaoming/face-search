@@ -18,6 +18,6 @@ public interface ImageDataMapper {
             "#{image.createTime,jdbcType=TIMESTAMP}, #{image.modifyTime,jdbcType=TIMESTAMP})"
     })
     @SelectKey(statement="SELECT LAST_INSERT_ID()", keyProperty="id", before=false, resultType=Long.class)
-    int insert(@Param("table")String table, @Param("image")ImageData record);
+    int insert(@Param("table") String table, @Param("image") ImageData record);
 
 }

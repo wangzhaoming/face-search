@@ -11,8 +11,6 @@ public class SampleFace implements Comparable<SampleFace>, Serializable {
     /**人脸人数质量**/
     private Float faceScore;
     /**转换后的置信度**/
-    private Float distance;
-    /**转换后的置信度**/
     private Float confidence;
     /**样本扩展的额外数据**/
     private KeyValues sampleData;
@@ -65,14 +63,6 @@ public class SampleFace implements Comparable<SampleFace>, Serializable {
 
     public void setFaceScore(Float faceScore) {
         this.faceScore = faceScore;
-    }
-
-    public Float getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Float distance) {
-        this.distance = distance;
     }
 
     public Float getConfidence() {

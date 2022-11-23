@@ -5,10 +5,9 @@ import com.visual.face.search.core.utils.JsonUtil;
 import com.visual.face.search.core.utils.ThreadUtil;
 import com.visual.face.search.server.domain.request.CollectReqVo;
 import com.visual.face.search.server.domain.response.CollectRepVo;
-import com.visual.face.search.server.engine.api.SearchEngine;
-import com.visual.face.search.server.engine.conf.Constant;
-import com.visual.face.search.server.engine.model.MapParam;
-//import com.visual.face.search.server.mapper.CollectMapper;
+import com.visual.face.search.engine.api.SearchEngine;
+import com.visual.face.search.engine.conf.Constant;
+import com.visual.face.search.engine.model.MapParam;
 import com.visual.face.search.server.mapper.CollectMapper;
 import com.visual.face.search.server.model.Collection;
 import com.visual.face.search.server.service.api.CollectService;
@@ -21,12 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Service("visualCollectService")
@@ -91,8 +88,8 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             }
             //创建人脸向量库
             MapParam param = MapParam.build()
-                    .put(Constant.ParamKeyShardsNum, collect.getShardsNum())
-                    .put(Constant.ParamKeyMaxDocsPerSegment, collect.getMaxDocsPerSegment());
+                    .put(Constant.IndexShardsNum, collect.getShardsNum())
+                    .put(Constant.IndexReplicasNum, collect.getReplicasNum());
             boolean createVectorFlag = searchEngine.createCollection(vectorTableName, param);
             if(!createVectorFlag){
                 throw new RuntimeException("create vector table error");

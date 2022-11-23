@@ -61,25 +61,25 @@ public interface FaceDataMapper {
     int deleteById(@Param("table") String table, @Param("id") Long id);
 
     @Delete({"delete from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR}"})
-    int deleteBySampleId(@Param("table") String table, @Param("sampleId")String sampleId);
+    int deleteBySampleId(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Delete({"delete from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR} and face_id=#{faceId,jdbcType=VARCHAR}"})
-    int deleteByFaceId(@Param("table") String table, @Param("sampleId")String sampleId, @Param("faceId")String faceId);
+    int deleteByFaceId(@Param("table") String table, @Param("sampleId") String sampleId, @Param("faceId") String faceId);
 
     @Select({"select count(1) from ${table} where sample_id = '${sampleId}'"})
-    long countBySampleId(@Param("table") String table, @Param("sampleId")String sampleId);
+    long countBySampleId(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Select({"select count(1) from ${table} where sample_id = '${sampleId}' and face_id=#{faceId,jdbcType=VARCHAR}"})
-    long count(@Param("table") String table, @Param("sampleId")String sampleId, @Param("faceId")String faceId);
+    long count(@Param("table") String table, @Param("sampleId") String sampleId, @Param("faceId") String faceId);
 
     @Select({"select id from ${table} where sample_id = '${sampleId}' and face_id=#{faceId,jdbcType=VARCHAR}"})
-    Long getIdByFaceId(@Param("table") String table, @Param("sampleId")String sampleId, @Param("faceId")String faceId);
+    Long getIdByFaceId(@Param("table") String table, @Param("sampleId") String sampleId, @Param("faceId") String faceId);
 
-    @Select({"select id from ${table} where sample_id=#{sampleId,jdbcType=VARCHAR}"})
-    List<Long> getIdBySampleId(@Param("table") String table, @Param("sampleId")String sampleId);
+    @Select({"select face_id from ${table} where sample_id=#{sampleId,jdbcType=VARCHAR}"})
+    List<String> getFaceIdBySampleId(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Select({"select * from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR}"})
-    List<Map<String, Object>> getBySampleId(@Param("table") String table, @Param("sampleId")String sampleId);
+    List<Map<String, Object>> getBySampleId(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Select({
         "<script>",
@@ -89,20 +89,24 @@ public interface FaceDataMapper {
             "</foreach>",
         "</script>"
     })
-    List<Map<String, Object>> getBySampleIds(@Param("table") String table, @Param("sampleIds")List<String> sampleIds);
+    List<Map<String, Object>> getBySampleIds(@Param("table") String table, @Param("sampleIds") List<String> sampleIds);
 
     @Select({"select * from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR} and face_id=#{faceId,jdbcType=VARCHAR}"})
-    Map<String, Object> getByFaceId(@Param("table") String table, @Param("sampleId")String sampleId, @Param("faceId")String faceId);
+    Map<String, Object> getByFaceId(@Param("table") String table, @Param("sampleId") String sampleId, @Param("faceId") String faceId);
 
     @Select({
             "<script>",
-                "select * from ${table} where face_id in ",
+                "select",
+                "<foreach item=\"item\" index=\"index\" collection=\"columns\" open=\"\" separator=\",\" close=\"\">",
+                    "${item}",
+                "</foreach>",
+                "from ${table} where face_id in ",
                 "<foreach collection=\"faceIds\" item=\"item\" index=\"index\" open=\"(\" separator=\",\" close=\")\">",
                     "#{item,jdbcType=VARCHAR}",
                 "</foreach>",
             "</script>"
     })
-    List<Map<String, Object>> getByFaceIds(@Param("table") String table, @Param("faceIds")List<String> faceIds);
+    List<Map<String, Object>> getByFaceIds(@Param("table") String table, @Param("columns") List<String> columns, @Param("faceIds") List<String> faceIds);
 
     @Select({
             "<script>",
@@ -112,6 +116,6 @@ public interface FaceDataMapper {
                 "</foreach>",
             "</script>"
     })
-    List<Map<String, Object>> getByPrimaryIds(@Param("table") String table, @Param("keyIds")List<Long> keyIds);
+    List<Map<String, Object>> getByPrimaryIds(@Param("table") String table, @Param("keyIds") List<Long> keyIds);
 
 }

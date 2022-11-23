@@ -89,7 +89,7 @@ public class DruidConfig
         Filter filter = new Filter()
         {
             @Override
-            public void init(javax.servlet.FilterConfig filterConfig) throws ServletException
+            public void init(FilterConfig filterConfig) throws ServletException
             {
             }
 

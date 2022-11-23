@@ -1,9 +1,9 @@
-FROM frolvlad/alpine-oraclejre8
+FROM openjdk:11.0.11-jre-slim
 MAINTAINER face-search
 WORKDIR /app/face-search
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
-apk update && apk add libssl1.0 libx11 libxext libxrender libstdc++ freetype fontconfig
+#RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+#apk update && apk add libssl1.0 libx11 libxext libxrender libstdc++ freetype fontconfig
 
 COPY scripts/docker/entrypoint.sh /app/face-search
 RUN chmod +x /app/face-search/entrypoint.sh

@@ -1,12 +1,13 @@
 package com.visual.face.search.server.service.impl;
 
+import com.visual.face.search.engine.api.SearchEngine;
 import com.visual.face.search.core.domain.ExtParam;
 import com.visual.face.search.core.domain.FaceImage;
 import com.visual.face.search.core.domain.FaceInfo;
 import com.visual.face.search.core.domain.ImageMat;
 import com.visual.face.search.core.extract.FaceFeatureExtractor;
 import com.visual.face.search.core.utils.JsonUtil;
-import com.visual.face.search.core.utils.Similarity;
+import com.visual.face.search.server.domain.request.SearchAlgorithm;
 import com.visual.face.search.server.domain.storage.StorageDataInfo;
 import com.visual.face.search.server.domain.storage.StorageImageInfo;
 import com.visual.face.search.server.domain.storage.StorageInfo;
@@ -14,11 +15,6 @@ import com.visual.face.search.server.domain.extend.FieldKeyValue;
 import com.visual.face.search.server.domain.extend.FieldKeyValues;
 import com.visual.face.search.server.domain.request.FaceDataReqVo;
 import com.visual.face.search.server.domain.response.FaceDataRepVo;
-import com.visual.face.search.server.engine.api.SearchEngine;
-import com.visual.face.search.server.engine.conf.Constant;
-import com.visual.face.search.server.engine.model.SearchDocument;
-import com.visual.face.search.server.engine.model.SearchResponse;
-import com.visual.face.search.server.engine.model.SearchResult;
 import com.visual.face.search.server.mapper.CollectMapper;
 import com.visual.face.search.server.mapper.FaceDataMapper;
 import com.visual.face.search.server.mapper.SampleDataMapper;
@@ -33,8 +29,6 @@ import com.visual.face.search.server.service.base.BaseService;
 import com.visual.face.search.server.utils.CollectionUtil;
 import com.visual.face.search.server.utils.TableUtils;
 import com.visual.face.search.server.utils.VTableCache;
-import com.visual.face.search.server.utils.ValueUtil;
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -101,45 +95,18 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
         float[] embeds = faceInfo.embedding.embeds;
         //当前样本的人脸相似度的最小阈值
         if(null != face.getMinConfidenceThresholdWithThisSample() && face.getMinConfidenceThresholdWithThisSample() > 0){
-            List<Map<String, Object>> faces = faceDataMapper.getBySampleId(collection.getFaceTable(), face.getSampleId());
-            for(Map<String, Object> item : faces){
-                String faceVectorStr = MapUtils.getString(item, Constant.ColumnNameFaceVector);
-                float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                float simVal = Similarity.cosineSimilarityNorm(embeds, faceVector);
-                float confidence = (float) Math.floor(simVal * 10000)/100;
-                if(confidence < face.getMinConfidenceThresholdWithThisSample()){
-                    throw new RuntimeException("this face confidence is less than minConfidenceThresholdWithThisSample,confidence="+confidence+",threshold="+face.getMinConfidenceThresholdWithThisSample());
-                }
+            float minScore = this.searchEngine.searchMinScoreBySampleId(collection.getVectorTable(), face.getSampleId(), embeds, SearchAlgorithm.COSINESIMIL.algorithm());
+            float confidence = (float) Math.floor(minScore * 10000)/100;
+            if(confidence < face.getMinConfidenceThresholdWithThisSample()){
+                throw new RuntimeException("this face confidence is less than minConfidenceThresholdWithThisSample,confidence="+confidence+",threshold="+face.getMinConfidenceThresholdWithThisSample());
             }
         }
         //当前样本与其他样本的人脸相似度的最大阈值
         if(null != face.getMaxConfidenceThresholdWithOtherSample() && face.getMaxConfidenceThresholdWithOtherSample() > 0){
-            //查询
-            List<Long> otherFaceIds = new ArrayList<>();
-            List<Long> faceIds = faceDataMapper.getIdBySampleId(collection.getFaceTable(), face.getSampleId());
-            int topK = faceIds.size() + 2;
-            float [][] vectors = new float[1][]; vectors[0] = embeds;
-            SearchResponse response = searchEngine.search(collection.getVectorTable(), vectors, topK);
-            if(response.getStatus().ok()){
-                for(SearchResult result : response.getResult()){
-                    for(SearchDocument document : result.getDocuments()){
-                        if(!faceIds.contains(document.getPrimaryKey())){
-                            otherFaceIds.add(document.getPrimaryKey());
-                        }
-                    }
-                }
-            }
-            if(!otherFaceIds.isEmpty()){
-                List<Map<String, Object>> faces = faceDataMapper.getByPrimaryIds(collection.getFaceTable(), otherFaceIds);
-                for(Map<String, Object> item : faces){
-                    String faceVectorStr = MapUtils.getString(item, Constant.ColumnNameFaceVector);
-                    float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                    float simVal = Similarity.cosineSimilarityNorm(embeds, faceVector);
-                    float confidence = (float) Math.floor(simVal * 10000)/100;
-                    if(confidence > face.getMaxConfidenceThresholdWithOtherSample()){
-                        throw new RuntimeException("this face confidence is gather than maxConfidenceThresholdWithOtherSample,confidence="+confidence+",threshold="+face.getMaxConfidenceThresholdWithOtherSample());
-                    }
-                }
+            float minScore = this.searchEngine.searchMaxScoreBySampleId(collection.getVectorTable(), face.getSampleId(), embeds, SearchAlgorithm.COSINESIMIL.algorithm());
+            float confidence = (float) Math.floor(minScore * 10000)/100;
+            if(confidence > face.getMaxConfidenceThresholdWithOtherSample()){
+                throw new RuntimeException("this face confidence is gather than maxConfidenceThresholdWithOtherSample,confidence="+confidence+",threshold="+face.getMaxConfidenceThresholdWithOtherSample());
             }
         }
         //保存图片信息并获取图片存储
@@ -188,7 +155,7 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
             throw new RuntimeException("create face error");
         }
         //写入数据到人脸向量库
-        boolean flag1 = searchEngine.insertVector(collection.getVectorTable(), facePo.getId(), faceId, embeds);
+        boolean flag1 = searchEngine.insertVector(collection.getVectorTable(), face.getSampleId(), faceId, embeds);
         if(!flag1){
             throw new RuntimeException("create face vector error");
         }
@@ -218,7 +185,7 @@ public class FaceDataServiceImpl extends BaseService implements FaceDataService 
             throw new RuntimeException("face id is not exist");
         }
         //删除向量
-        boolean delete = searchEngine.deleteVectorByKey(collection.getVectorTable(), keyId);
+        boolean delete = searchEngine.deleteVectorByKey(collection.getVectorTable(), faceId);
         if(!delete){
             throw new RuntimeException("delete face vector error");
         }
