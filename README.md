@@ -93,8 +93,8 @@
 | VISUAL_ENGINE_OPENSEARCH_HOST              | OPENSEARCH地址   		|             |                                    |
 | VISUAL_ENGINE_OPENSEARCH_PORT              | OPENSEARCH端口    	|  9200       |                                    |
 | VISUAL_ENGINE_OPENSEARCH_SCHEME            | OPENSEARCH协议    	|  https      |                                    |
-| VISUAL_ENGINE_OPENSEARCH_USERNAME          | OPENSEARCH用户名 		|  19530      |                                    |
-| VISUAL_ENGINE_OPENSEARCH_PASSWORD          | OPENSEARCH密码   		|  proxima    |                                    |
+| VISUAL_ENGINE_OPENSEARCH_USERNAME          | OPENSEARCH用户名 		|  admin      |                                    |
+| VISUAL_ENGINE_OPENSEARCH_PASSWORD          | OPENSEARCH密码   		|  admin    |                                    |
 | VISUAL_MODEL_FACEDETECTION_NAME            | 人脸检测模型名称    	|  PcnNetworkFaceDetection    |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
 | VISUAL_MODEL_FACEDETECTION_BACKUP_NAME     | 备用人脸检测模型名称    | InsightScrfdFaceDetection  |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
 | VISUAL_MODEL_FACEKEYPOINT_NAME             | 人脸关键点模型名称      | InsightCoordFaceKeyPoint  |InsightCoordFaceKeyPoint|
