@@ -50,7 +50,7 @@ public interface SampleDataMapper {
     int create(@Param("table") String table, @Param("sample") SampleData sample, @Param("columnValues") List<ColumnValue> columnValues);
 
     @Select({"select count(1) from ${table} where sample_id = '${sampleId}'"})
-    long count(@Param("table") String table, @Param("sampleId")String sampleId);
+    long count(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Update({
         "<script>",
@@ -79,16 +79,16 @@ public interface SampleDataMapper {
             "where sample_id = #{sampleId,jdbcType=BIGINT}",
         "</script>"
     })
-    int update(@Param("table") String table, @Param("sampleId")String sampleId, @Param("columnValues") List<ColumnValue> columnValues);
+    int update(@Param("table") String table, @Param("sampleId") String sampleId, @Param("columnValues") List<ColumnValue> columnValues);
 
     @Delete({"delete from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR}",})
-    int delete(@Param("table") String table,  @Param("sampleId")String sampleId);
+    int delete(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Select({"select * from ${table} where sample_id = #{sampleId,jdbcType=VARCHAR}"})
-    Map<String, Object> getBySampleId(@Param("table") String table, @Param("sampleId")String sampleId);
+    Map<String, Object> getBySampleId(@Param("table") String table, @Param("sampleId") String sampleId);
 
     @Select({"select * from ${table} order by id ${order} limit ${offset}, ${limit}"})
-    List<Map<String, Object>> getBySampleList(@Param("table") String table, @Param("offset")Integer offset, @Param("limit")Integer limit, @Param("order")String order);
+    List<Map<String, Object>> getBySampleList(@Param("table") String table, @Param("offset") Integer offset, @Param("limit") Integer limit, @Param("order") String order);
 
     @Select({
             "<script>",
@@ -98,5 +98,5 @@ public interface SampleDataMapper {
                 "</foreach>",
             "</script>"
     })
-    List<Map<String, Object>> getBySampleIds(@Param("table") String table, @Param("sampleIds")List<String> sampleIds);
+    List<Map<String, Object>> getBySampleIds(@Param("table") String table, @Param("sampleIds") List<String> sampleIds);
 }

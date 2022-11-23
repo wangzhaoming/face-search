@@ -1,6 +1,6 @@
 ## 人脸搜索M:N
 
-* 本项目是阿里云视觉智能开放平台的人脸1：N的开源替代，项目中使用的模型均为开源模型，项目支持milvus和proxima向量存储库，并具有较高的自定义能力。
+* 本项目是阿里云视觉智能开放平台的人脸1：N的开源替代，项目中使用的模型均为开源模型，项目支持opensearch(1.x版本支持milvus和proxima)向量存储库，并具有较高的自定义能力。
 
 * 项目使用纯Java开发，免去使用Python带来的服务不稳定性。
 
@@ -22,9 +22,7 @@
 
 &ensp; &ensp; 2、[onnx](https://github.com/onnx/onnx)
 
-&ensp; &ensp; 3、[milvus](https://github.com/milvus-io/milvus/)
-
-&ensp; &ensp; 4、[proxima](https://github.com/alibaba/proximabilin)
+&ensp; &ensp; 3、[opensearch](https://opensearch.org/)
 
 * 深度学习模型
 
@@ -32,15 +30,14 @@
 
 &ensp; &ensp; 2、[PCN](https://github.com/Rock-100/FaceKit/tree/master/PCN)
 
-### 版本1.1.0更新
+### 版本2.2.0更新
 
-* 1、修复已知BUG
-* 2、添加人脸比对1：1接口，详见文档：[05、人脸比对服务](https://gitee.com/open-visual/face-search/blob/v1.2.0/scripts/docs/doc-1.1.0.md#05%E4%BA%BA%E8%84%B8%E6%AF%94%E5%AF%B9%E6%9C%8D%E5%8A%A1)
-
+* 1、添加对opensearch的支持，删除对proxima与milvus向量引擎的支持
+* 2、更新：删除搜索结果中的距离指标，仅保留置信度指标（余弦相似度）
 
 ### 项目文档
 
-* 在线文档：[文档-1.2.0](https://gitee.com/open-visual/face-search/blob/v1.1.0/scripts/docs/doc-1.1.0.md)
+* 在线文档：[文档-2.0.0](scripts/docs/2.0.0.md
 
 * swagger文档：启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
 
@@ -51,23 +48,30 @@
 <dependency>
     <groupId>com.visual.face.search</groupId>
     <artifactId>face-search-client</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 * 其他语言依赖
 
-&ensp; &ensp;使用restful接口：[文档-1.2.0](https://gitee.com/open-visual/face-search/blob/v1.2.0/scripts/docs/doc-1.1.0.md)
+&ensp; &ensp;使用restful接口：[文档-2.0.0](scripts/docs/2.0.0.md)
 
 
 ### 项目部署
 
 * docker部署，脚本目录：face-search/scripts
 ```
-1、使用milvus作为向量搜索引擎
-  docker-compose -f docker-compose-milvus.yml --compatibility up -d
+1、配置环境变量：FACESEARCH_VOLUME_DIRECTORY，指定当前的挂载根路径，默认为当前路径
 
-2、使用proxima作为向量搜索引擎
-   docker-compose -f docker-compose-proxima.yml --compatibility up -d
+2、对opensearch的挂载目录进行赋权：
+ 新建目录：${FACESEARCH_VOLUME_DIRECTORY:-.}/volumes-face-search/opensearch/data
+ 目录赋权：chmod 777 ${FACESEARCH_VOLUME_DIRECTORY:-.}/volumes-face-search/opensearch/data
+
+3、使用opensearch作为向量搜索引擎
+  docker-compose -f docker-compose-opensearch.yml --compatibility up -d
+
+4、服务访问：
+  opensearch自带的可视化工具：http://127.0.0.1:5601
+  facesearch的swagger文档： http://127.0.0.1:56789/doc.html
 ```
 
 * 项目编译
@@ -105,13 +109,9 @@
 
 ### 项目演示
 
-* 1.1.0 测试用例：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
+* 2.0.0 测试用例(做了优化，增强了搜索结果的区分度)：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
 
-* ![输入图片说明](scripts/images/validate.jpg)
-
-* 1.2.0 测试用例(做了优化，增强了搜索结果的区分度)：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
-
-* ![输入图片说明](scripts/images/validate-1.2.0.jpg)
+* ![输入图片说明](scripts/images/validate-2.0.0.jpg)
 
 ### 交流群
 

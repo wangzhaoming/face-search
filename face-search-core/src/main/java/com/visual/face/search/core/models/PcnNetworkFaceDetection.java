@@ -66,7 +66,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
             imgPad = pad_img_not_release_mat(mat);
             float[] iouThs = iouTh <= 0 ? defIouThs : new float[]{iouTh, iouTh, 0.3f};
             float[] scoreThs = scoreTh <= 0 ? defScoreThs : new float[]{0.375f * scoreTh, 0.5f * scoreTh, scoreTh};
-            List<PcnNetworkFaceDetection.Window2> willis = detect(this.getSessions(), mat, imgPad, scoreThs, iouThs);
+            List<Window2> willis = detect(this.getSessions(), mat, imgPad, scoreThs, iouThs);
             return trans_window(mat, imgPad, willis);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -573,7 +573,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
      * @throws OrtException
      * @throws IOException
      */
-    private static List<PcnNetworkFaceDetection.Window2> detect(OrtSession[] sessions, Mat img, Mat imgPad, float[] scoreThs, float iouThs[]) throws OrtException, IOException {
+    private static List<Window2> detect(OrtSession[] sessions, Mat img, Mat imgPad, float[] scoreThs, float iouThs[]) throws OrtException, IOException {
         Mat img180 = new Mat();
         Core.flip(imgPad, img180, 0);
 
@@ -583,7 +583,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
         Mat imgNeg90 = new Mat();
         Core.flip(img90, imgNeg90, 0);
 
-        List<PcnNetworkFaceDetection.Window2> winlist = stage1(img, imgPad, sessions[0], scoreThs[0]);
+        List<Window2> winlist = stage1(img, imgPad, sessions[0], scoreThs[0]);
         winlist = NMS(winlist, true, iouThs[0]);
 
         winlist = stage2(imgPad, img180, sessions[1], scoreThs[1], 24, winlist);
@@ -604,7 +604,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
     /**
      * 临时的人脸框
      */
-    private static class Window2 implements Comparable<PcnNetworkFaceDetection.Window2>{
+    private static class Window2 implements Comparable<Window2>{
         public int x;
         public int y;
         public int w;
@@ -624,7 +624,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
         }
 
         @Override
-        public int compareTo(PcnNetworkFaceDetection.Window2 o) {
+        public int compareTo(Window2 o) {
             if(o.conf == this.conf){
                 return new Integer(this.y).compareTo(o.y);
             }else{

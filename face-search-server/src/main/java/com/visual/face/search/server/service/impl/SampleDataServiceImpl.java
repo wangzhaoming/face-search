@@ -1,12 +1,12 @@
 package com.visual.face.search.server.service.impl;
 
+import com.visual.face.search.engine.conf.Constant;
+import com.visual.face.search.engine.api.SearchEngine;
 import com.visual.face.search.server.domain.extend.FieldKeyValue;
 import com.visual.face.search.server.domain.extend.FieldKeyValues;
 import com.visual.face.search.server.domain.extend.SimpleFaceVo;
 import com.visual.face.search.server.domain.request.SampleDataReqVo;
 import com.visual.face.search.server.domain.response.SampleDataRepVo;
-import com.visual.face.search.server.engine.api.SearchEngine;
-import com.visual.face.search.server.engine.conf.Constant;
 import com.visual.face.search.server.mapper.CollectMapper;
 import com.visual.face.search.server.mapper.FaceDataMapper;
 import com.visual.face.search.server.mapper.SampleDataMapper;
@@ -21,7 +21,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -128,7 +127,7 @@ public class SampleDataServiceImpl extends BaseService implements SampleDataServ
             throw new RuntimeException("sample_id is not exist");
         }
         //删除向量数据
-        List<Long> faceIds = faceDataMapper.getIdBySampleId(collection.getFaceTable(), sampleId);
+        List<String> faceIds = faceDataMapper.getFaceIdBySampleId(collection.getFaceTable(), sampleId);
         searchEngine.deleteVectorByKey(collection.getVectorTable(), faceIds);
         //删除人脸数据
         faceDataMapper.deleteBySampleId(collection.getFaceTable(), sampleId);

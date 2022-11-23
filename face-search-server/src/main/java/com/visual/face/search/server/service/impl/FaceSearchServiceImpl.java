@@ -12,12 +12,13 @@ import com.visual.face.search.core.utils.Similarity;
 import com.visual.face.search.server.domain.extend.FaceLocation;
 import com.visual.face.search.server.domain.extend.SampleFaceVo;
 import com.visual.face.search.server.domain.request.FaceSearchReqVo;
+import com.visual.face.search.server.domain.request.SearchAlgorithm;
 import com.visual.face.search.server.domain.response.FaceSearchRepVo;
-import com.visual.face.search.server.engine.api.SearchEngine;
-import com.visual.face.search.server.engine.conf.Constant;
-import com.visual.face.search.server.engine.model.SearchDocument;
-import com.visual.face.search.server.engine.model.SearchResponse;
-import com.visual.face.search.server.engine.model.SearchResult;
+import com.visual.face.search.engine.api.SearchEngine;
+import com.visual.face.search.engine.conf.Constant;
+import com.visual.face.search.engine.model.SearchDocument;
+import com.visual.face.search.engine.model.SearchResponse;
+import com.visual.face.search.engine.model.SearchResult;
 import com.visual.face.search.server.mapper.CollectMapper;
 import com.visual.face.search.server.mapper.FaceDataMapper;
 import com.visual.face.search.server.mapper.SampleDataMapper;
@@ -82,7 +83,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
         }
         //特征搜索
         int topK = (null == search.getLimit() || search.getLimit()  <= 0) ? 5 : search.getLimit();
-        SearchResponse searchResponse =searchEngine.search(collection.getVectorTable(), vectors, topK);
+        SearchResponse searchResponse =searchEngine.search(collection.getVectorTable(), vectors, search.getAlgorithm().algorithm(), topK);
         if(!searchResponse.getStatus().ok()){
             throw new RuntimeException(searchResponse.getStatus().getReason());
         }
@@ -106,33 +107,19 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
             return vos;
         }
         //获取关联数据ID
-        boolean needFixFaceId = false;
-        Set<Long> faceIds = new HashSet<>();
+        Set<String> faceIds = new HashSet<>();
         for(SearchResult searchResult : result){
             List<SearchDocument> documents = searchResult.getDocuments();
             for(SearchDocument document : documents){
-                faceIds.add(document.getPrimaryKey());
-                if(null == document.getFaceId() || document.getFaceId().isEmpty()){
-                    needFixFaceId = true;
-                }
+                faceIds.add(document.getFaceId());
             }
         }
         //查询数据
-        List<Map<String, Object>> faceList = faceDataMapper.getByPrimaryIds(collection.getFaceTable(), new ArrayList<>(faceIds));
+        List<Map<String, Object>> faceList = faceDataMapper.getByFaceIds(collection.getFaceTable(), ValueUtil.getAllFaceColumnNames(collection), new ArrayList<>(faceIds));
         Set<String> sampleIds = faceList.stream().map(item -> MapUtils.getString(item, Constant.ColumnNameSampleId)).collect(Collectors.toSet());
         List<Map<String, Object>> sampleList = sampleDataMapper.getBySampleIds(collection.getSampleTable(), new ArrayList<>(sampleIds));
         Map<String, Map<String, Object>> faceMapping = ValueUtil.mapping(faceList, Constant.ColumnNameFaceId);
         Map<String, Map<String, Object>> sampleMapping = ValueUtil.mapping(sampleList, Constant.ColumnNameSampleId);
-        //补全结果数据中的FaceId。由于milvus不支持字符串结构，只会返回人脸数据的主键ID
-        if(needFixFaceId){
-            Map<Long, String> mapping = ValueUtil.mapping(faceList, Constant.ColumnPrimaryKey, Constant.ColumnNameFaceId);
-            for(SearchResult searchResult : result){
-                List<SearchDocument> documents = searchResult.getDocuments();
-                for(SearchDocument document : documents){
-                    document.setFaceId(mapping.get(document.getPrimaryKey()));
-                }
-            }
-        }
         //构造返回结果
         List<FaceSearchRepVo> vos = new ArrayList<>();
         for(int i=0; i<faceInfos.size(); i++){
@@ -148,10 +135,12 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
                 if(null != face){
                     float faceScore = MapUtils.getFloatValue(face, Constant.ColumnNameFaceScore);
                     String sampleId = MapUtils.getString(face, Constant.ColumnNameSampleId);
-                    String faceVectorStr = MapUtils.getString(face, Constant.ColumnNameFaceVector);
-                    float[] faceVector = ValueUtil.convertVector(faceVectorStr);
-                    float simVal = Similarity.cosineSimilarityNorm(faceInfos.get(i).embedding.embeds, faceVector);
-                    float confidence = (float) Math.floor(simVal * 1000000)/10000;
+                    float score = document.getScore();
+                    float confidence = score;
+                    if(SearchAlgorithm.COSINESIMIL == search.getAlgorithm()){
+                        score = Similarity.cosEnhance(score);
+                        confidence = (float) Math.floor(score * 1000000)/10000;
+                    }
                     if(null != sampleId && sampleMapping.containsKey(sampleId) && confidence >= search.getConfidenceThreshold()){
                         Map<String, Object> sample = sampleMapping.get(sampleId);
                         SampleFaceVo faceVo = SampleFaceVo.build();
@@ -159,7 +148,6 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
                         faceVo.setFaceId(document.getFaceId());
                         faceVo.setFaceScore(faceScore);
                         faceVo.setConfidence(confidence);
-                        faceVo.setDistance((float) Math.floor(document.getScore() * 10000) / 10000);
                         faceVo.setFaceData(ValueUtil.getFieldKeyValues(face, ValueUtil.getFaceColumns(collection)));
                         faceVo.setSampleData(ValueUtil.getFieldKeyValues(sample, ValueUtil.getSampleColumns(collection)));
                         match.add(faceVo);

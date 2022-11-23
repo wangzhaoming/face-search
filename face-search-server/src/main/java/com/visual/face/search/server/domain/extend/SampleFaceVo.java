@@ -16,16 +16,13 @@ public class SampleFaceVo implements Comparable<SampleFaceVo>, Serializable {
     @ApiModelProperty(value="人脸分数:[0,100]", position = 3, required = true)
     private Float faceScore;
     /**转换后的置信度**/
-    @ApiModelProperty(value="向量距离:>=0", position = 4, required = true)
-    private Float distance;
-    /**转换后的置信度**/
-    @ApiModelProperty(value="转换后的置信度:[-100,100]，值越大，相似度越高。", position = 5, required = true)
+    @ApiModelProperty(value="转换后的置信度:[-100,100]，值越大，相似度越高。", position = 4, required = true)
     private Float confidence;
     /**样本扩展的额外数据**/
-    @ApiModelProperty(value="样本扩展的额外数据", position = 6, required = false)
+    @ApiModelProperty(value="样本扩展的额外数据", position = 5, required = false)
     private FieldKeyValues sampleData;
     /**人脸扩展的额外数据**/
-    @ApiModelProperty(value="人脸扩展的额外数据", position = 7, required = false)
+    @ApiModelProperty(value="人脸扩展的额外数据", position = 6, required = false)
     private FieldKeyValues faceData;
 
     /**
@@ -74,14 +71,6 @@ public class SampleFaceVo implements Comparable<SampleFaceVo>, Serializable {
 
     public void setFaceScore(Float faceScore) {
         this.faceScore = faceScore;
-    }
-
-    public Float getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Float distance) {
-        this.distance = distance;
     }
 
     public Float getConfidence() {

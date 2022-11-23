@@ -23,37 +23,36 @@ logging:
 visual:
   model:
     faceDetection:
-      name: InsightScrfdFaceDetection
-      modelPath:
-      thread: 4
+      name: ${VISUAL_MODEL_FACEDETECTION_NAME:InsightScrfdFaceDetection}
+      modelPath: ${VISUAL_MODEL_FACEDETECTION_PATH:}
+      thread: ${VISUAL_MODEL_FACEDETECTION_THREAD:4}
       backup:
-        name: PcnNetworkFaceDetection
-        modelPath:
-        thread: 4
+        name: ${VISUAL_MODEL_FACEDETECTION_BACKUP_NAME:PcnNetworkFaceDetection}
+        modelPath: ${VISUAL_MODEL_FACEDETECTION_BACKUP_PATH:}
+        thread: ${VISUAL_MODEL_FACEDETECTION_BACKUP_THREAD:4}
     faceKeyPoint:
-      name: InsightCoordFaceKeyPoint
-      modelPath:
-      thread: 4
+      name: ${VISUAL_MODEL_FACEKEYPOINT_NAME:InsightCoordFaceKeyPoint}
+      modelPath: ${VISUAL_MODEL_FACEKEYPOINT_PATH:}
+      thread: ${VISUAL_MODEL_FACEKEYPOINT_THREAD:4}
     faceAlignment:
-      name: Simple005pFaceAlignment
-      modelPath:
-      thread: 4
+      name: ${VISUAL_MODEL_FACEALIGNMENT_NAME:Simple005pFaceAlignment}
+      modelPath: ${VISUAL_MODEL_FACEALIGNMENT_PATH:}
+      thread: ${VISUAL_MODEL_FACEALIGNMENT_THREAD:4}
     faceRecognition:
-      name: InsightArcFaceRecognition
-      modelPath:
-      thread: 4
+      name: ${VISUAL_MODEL_FACERECOGNITION_NAME:InsightArcFaceRecognition}
+      modelPath: ${VISUAL_MODEL_FACERECOGNITION_PATH:}
+      thread: ${VISUAL_MODEL_FACERECOGNITION_THREAD:4}
     faceAttribute:
-      name: InsightAttributeDetection
-      modelPath:
-      thread: 4
+      name: ${VISUAL_MODEL_FACEATTRIBUTE_NAME:InsightAttributeDetection}
+      modelPath: ${VISUAL_MODEL_FACEATTRIBUTE_PATH:}
+      thread: ${VISUAL_MODEL_FACEATTRIBUTE_THREAD:4}
   engine:
-    selected: proxima
-    proxima:
-      host:
-      port: 16000
-    milvus:
-      host:
-      port: 19530
+    open-search:
+      host: ${VISUAL_ENGINE_OPENSEARCH_HOST}
+      port: ${VISUAL_ENGINE_OPENSEARCH_PORT:9200}
+      scheme: ${VISUAL_ENGINE_OPENSEARCH_SCHEME:https}
+      username: ${VISUAL_ENGINE_OPENSEARCH_USERNAME:admin}
+      password: ${VISUAL_ENGINE_OPENSEARCH_PASSWORD:admin}
   scheduler:
     flush:
       enable: true
@@ -62,7 +61,7 @@ visual:
     face-search: false
     face-compare: false
   swagger:
-    enable: true
+    enable: ${VISUAL_SWAGGER_ENABLE:true}
 
 # Spring配置
 spring:
@@ -83,9 +82,9 @@ spring:
     druid:
       # 主库数据源
       master:
-        url:
-        username:
-        password:
+        url: ${SPRING_DATASOURCE_URL}
+        username: ${SPRING_DATASOURCE_USERNAME:root}
+        password: ${SPRING_DATASOURCE_PASSWORD:root}
       slave:
         # 从数据源开关/默认关闭
         enabled: false

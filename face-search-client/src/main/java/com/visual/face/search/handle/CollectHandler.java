@@ -46,7 +46,6 @@ public class CollectHandler extends BaseHandler<CollectHandler>{
                 .setMaxDocsPerSegment(collect.getMaxDocsPerSegment())
                 .setSampleColumns(collect.getSampleColumns())
                 .setFaceColumns(collect.getFaceColumns())
-                .setSyncBinLog(collect.isSyncBinLog())
                 .setShardsNum(collect.getShardsNum())
                 .setStorageFaceInfo(collect.getStorageFaceInfo())
                 .setStorageEngine(collect.getStorageEngine());

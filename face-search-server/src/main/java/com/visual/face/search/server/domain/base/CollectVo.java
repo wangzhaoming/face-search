@@ -28,7 +28,7 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     /**数据分片中最大的文件个数**/
     @Min(value = 0, message = "maxDocsPerSegment must greater than or equal to 0")
     @ApiModelProperty(value="数据分片中最大的文件个数，默认为0（不限制）,仅对Proxima引擎生效", position = 3,required = false)
-    private Long maxDocsPerSegment;
+    private Long replicasNum;
     /**数据分片中最大的文件个数**/
     @Min(value = 0, message = "shardsNum must greater than or equal to 0")
     @ApiModelProperty(value="要创建的集合的分片数，默认为0（即系统默认）,仅对Milvus引擎生效", position = 4,required = false)
@@ -39,9 +39,6 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     /**自定义的人脸字段**/
     @ApiModelProperty(value="自定义的人脸属性字段", position = 6,required = false)
     private List<FiledColumn> faceColumns = new ArrayList<>();
-    /**启用binlog同步**/
-    @ApiModelProperty(value="启用binlog同步。扩展字段，暂不支持该功能", position = 7,required = false)
-    private Boolean syncBinLog;
     /**是否保留图片及人脸信息**/
     @ApiModelProperty(value="是否保留图片及人脸信息", position = 8,required = false)
     private Boolean storageFaceInfo;
@@ -86,12 +83,12 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
         return (ExtendsVo) this;
     }
 
-    public Long getMaxDocsPerSegment() {
-        return maxDocsPerSegment;
+    public Long getReplicasNum() {
+        return replicasNum;
     }
 
-    public ExtendsVo setMaxDocsPerSegment(Long maxDocsPerSegment) {
-        this.maxDocsPerSegment = maxDocsPerSegment;
+    public ExtendsVo setReplicasNum(Long replicasNum) {
+        this.replicasNum = replicasNum;
         return (ExtendsVo) this;
     }
 
@@ -123,15 +120,6 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
         if(null != faceColumns){
             this.faceColumns = faceColumns;
         }
-        return (ExtendsVo) this;
-    }
-
-    public boolean isSyncBinLog() {
-        return null == syncBinLog ? false : syncBinLog;
-    }
-
-    public ExtendsVo setSyncBinLog(Boolean syncBinLog) {
-        this.syncBinLog = syncBinLog;
         return (ExtendsVo) this;
     }
 

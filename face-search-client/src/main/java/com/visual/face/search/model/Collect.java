@@ -18,8 +18,6 @@ public class Collect<ExtendsVo extends Collect<ExtendsVo>> implements Serializab
     private List<FiledColumn> sampleColumns = new ArrayList<>();
     /**自定义的人脸字段**/
     private List<FiledColumn> faceColumns = new ArrayList<>();
-    /**启用binlog同步**/
-    private Boolean syncBinLog = false;
     /**是否保留图片及人脸信息**/
     private Boolean storageFaceInfo = false;
     /**保留图片及人脸信息的存储组件**/
@@ -82,17 +80,6 @@ public class Collect<ExtendsVo extends Collect<ExtendsVo>> implements Serializab
     public ExtendsVo setFaceColumns(List<FiledColumn> faceColumns) {
         if(null != faceColumns){
             this.faceColumns = faceColumns;
-        }
-        return (ExtendsVo) this;
-    }
-
-    public boolean isSyncBinLog() {
-        return null == syncBinLog ? false : syncBinLog;
-    }
-
-    public ExtendsVo setSyncBinLog(Boolean syncBinLog) {
-        if(null != syncBinLog){
-            this.syncBinLog = syncBinLog;
         }
         return (ExtendsVo) this;
     }

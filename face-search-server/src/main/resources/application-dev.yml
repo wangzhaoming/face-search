@@ -47,13 +47,12 @@ visual:
       modelPath:
       thread: 1
   engine:
-    selected: milvus
-    proxima:
-      host: visual-face-search-proxima
-      port: 16000
-    milvus:
-      host: visual-face-search-milvus
-      port: 19530
+    open-search:
+      host: visual-face-search-opensearch
+      port: 9200
+      scheme: https
+      username: admin
+      password: admin
   scheduler:
     flush:
       enable: true
