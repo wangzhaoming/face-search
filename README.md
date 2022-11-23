@@ -105,8 +105,6 @@
 
 * 项目中为了提高人脸的检出率，使用了主要和次要的人脸检测模型，目前实现了两种人脸检测模型insightface和PCN，在docker的服务中，默认主服务为PCN，备用服务为insightface。insightface的效率高，但针对于旋转了大角度的人脸检出率不高，而pcn则可以识别大角度旋转的图片，但效率低一些。若图像均为正脸的图像，建议使用insightface为主模型，pcn为备用模型，如何切换，请查看部署参数。
 
-* 在测试过程中，针对milvus和proxima，发现proxima的速度比milvus稍快，但稳定性没有milvus好，线上服务使用时，还是建议使用milvus作为向量检索引擎。
-
 ### 项目演示
 
 * 2.0.0 测试用例(做了优化，增强了搜索结果的区分度)：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
