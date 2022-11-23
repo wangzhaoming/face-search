@@ -30,7 +30,7 @@
 
 &ensp; &ensp; 2、[PCN](https://github.com/Rock-100/FaceKit/tree/master/PCN)
 
-### 版本2.2.0更新
+### 版本2.0.0更新
 
 * 1、添加对opensearch的支持，删除对proxima与milvus向量引擎的支持
 * 2、更新：删除搜索结果中的距离指标，仅保留置信度指标（余弦相似度）
