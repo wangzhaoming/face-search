@@ -115,11 +115,15 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
             }
         }
         //查询数据
-        List<Map<String, Object>> faceList = faceDataMapper.getByFaceIds(collection.getFaceTable(), ValueUtil.getAllFaceColumnNames(collection), new ArrayList<>(faceIds));
-        Set<String> sampleIds = faceList.stream().map(item -> MapUtils.getString(item, Constant.ColumnNameSampleId)).collect(Collectors.toSet());
-        List<Map<String, Object>> sampleList = sampleDataMapper.getBySampleIds(collection.getSampleTable(), new ArrayList<>(sampleIds));
-        Map<String, Map<String, Object>> faceMapping = ValueUtil.mapping(faceList, Constant.ColumnNameFaceId);
-        Map<String, Map<String, Object>> sampleMapping = ValueUtil.mapping(sampleList, Constant.ColumnNameSampleId);
+        Map<String, Map<String, Object>> faceMapping = new HashMap<>();
+        Map<String, Map<String, Object>> sampleMapping = new HashMap<>();
+        if(faceIds.size() > 0){
+            List<Map<String, Object>> faceList = faceDataMapper.getByFaceIds(collection.getFaceTable(), ValueUtil.getAllFaceColumnNames(collection), new ArrayList<>(faceIds));
+            Set<String> sampleIds = faceList.stream().map(item -> MapUtils.getString(item, Constant.ColumnNameSampleId)).collect(Collectors.toSet());
+            List<Map<String, Object>> sampleList = sampleDataMapper.getBySampleIds(collection.getSampleTable(), new ArrayList<>(sampleIds));
+            faceMapping = ValueUtil.mapping(faceList, Constant.ColumnNameFaceId);
+            sampleMapping = ValueUtil.mapping(sampleList, Constant.ColumnNameSampleId);
+        }
         //构造返回结果
         List<FaceSearchRepVo> vos = new ArrayList<>();
         for(int i=0; i<faceInfos.size(); i++){
