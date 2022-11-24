@@ -23,7 +23,7 @@ public class FaceSearchExample {
     //远程测试服务
     //public static String serverHost = "http://face-search.diven.nat300.top";
     public static String namespace = "namespace_1";
-    public static String collectionName = "collect_20211201_v10";
+    public static String collectionName = "collect_20211201_v11";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);
 
     /**集合创建*/
@@ -33,7 +33,7 @@ public class FaceSearchExample {
         sampleColumns.add(FiledColumn.build().setName("name").setDataType(FiledDataType.STRING).setComment("姓名"));
         //人脸属性字段
         List<FiledColumn> faceColumns = new ArrayList<>();
-        faceColumns.add(FiledColumn.build().setName("label").setDataType(FiledDataType.STRING).setComment("标签1"));
+//        faceColumns.add(FiledColumn.build().setName("label").setDataType(FiledDataType.STRING).setComment("标签1"));
         //待创建的人脸库信息
         Collect collect = Collect.build().setCollectionComment("人脸库").setSampleColumns(sampleColumns).setFaceColumns(faceColumns);
         //删除集合
@@ -49,7 +49,7 @@ public class FaceSearchExample {
 
     /**添加样本数据*/
     public static void index(){
-        String indexPath = "face-search-test/src/main/resources/image/validate/index";
+        String indexPath = "face-search-test/src/main/resources/image/noface";
         for(String name : Objects.requireNonNull(new File(indexPath).list())){
             System.out.println(name);
             File files[] = Paths.get(indexPath, name).toFile().listFiles();
@@ -64,7 +64,7 @@ public class FaceSearchExample {
                 if(createSample.ok()){
                     for(File image : files){
                         KeyValues faceData = KeyValues.build();
-                        faceData.add(KeyValue.build("label", "标签-" + name));
+//                        faceData.add(KeyValue.build("label", "标签-" + name));
                         String imageBase64 = Base64Util.encode(image.getAbsolutePath());
                         Face face = Face.build(sampleId).setFaceData(faceData).setImageBase64(imageBase64)
                                 .setMinConfidenceThresholdWithThisSample(50f)
@@ -122,8 +122,8 @@ public class FaceSearchExample {
 
     /**main**/
     public static void main(String[] args) {
-        collect();
-        index();
+//        collect();
+//        index();
         search();
     }
 
