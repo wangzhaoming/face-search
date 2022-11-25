@@ -55,8 +55,6 @@ public class ModelConfig {
     private Integer faceAttributeDetectionNameThread;
 
 
-
-
     /**
      * 获取人脸识别模型
      * @return
@@ -78,14 +76,12 @@ public class ModelConfig {
      */
     @Bean(name = "visualBackupFaceDetection")
     public FaceDetection getBackupFaceDetection(){
-        if(faceDetectionName.equalsIgnoreCase(backupFaceDetectionName)){
-            return null;
-        }else if(backupFaceDetectionName.equalsIgnoreCase("PcnNetworkFaceDetection")){
+        if(backupFaceDetectionName.equalsIgnoreCase("PcnNetworkFaceDetection")){
             return new PcnNetworkFaceDetection(getModelPath(backupFaceDetectionName, backupFaceDetectionModel), backupFaceDetectionThread);
         }else if(backupFaceDetectionName.equalsIgnoreCase("InsightScrfdFaceDetection")){
             return new InsightScrfdFaceDetection(getModelPath(backupFaceDetectionName, backupFaceDetectionModel)[0], backupFaceDetectionThread);
         }else{
-            return new PcnNetworkFaceDetection(backupFaceDetectionModel, backupFaceDetectionThread);
+            return this.getFaceDetection();
         }
     }
 
@@ -158,11 +154,18 @@ public class ModelConfig {
             @Qualifier("visualFaceAlignment")FaceAlignment faceAlignment,
             @Qualifier("visualFaceRecognition")FaceRecognition faceRecognition,
             @Qualifier("visualAttributeDetection") FaceAttribute faceAttribute
-            ){
-        return new FaceFeatureExtractorImpl(
-                faceDetection, backupFaceDetection, faceKeyPoint,
-                faceAlignment, faceRecognition, faceAttribute
-        );
+    ){
+            if(faceDetectionName.equalsIgnoreCase(backupFaceDetectionName)){
+                return new FaceFeatureExtractorImpl(
+                    faceDetection, null, faceKeyPoint,
+                    faceAlignment, faceRecognition, faceAttribute
+                );
+            }else{
+                return new FaceFeatureExtractorImpl(
+                    faceDetection, backupFaceDetection, faceKeyPoint,
+                    faceAlignment, faceRecognition, faceAttribute
+                );
+            }
     }
 
     /**
