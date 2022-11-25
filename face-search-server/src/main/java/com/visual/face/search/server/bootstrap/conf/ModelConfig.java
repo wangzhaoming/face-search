@@ -155,7 +155,7 @@ public class ModelConfig {
             @Qualifier("visualFaceRecognition")FaceRecognition faceRecognition,
             @Qualifier("visualAttributeDetection") FaceAttribute faceAttribute
     ){
-            if(faceDetectionName.equalsIgnoreCase(backupFaceDetectionName)){
+            if(faceDetection.getClass().isAssignableFrom(backupFaceDetection.getClass())){
                 return new FaceFeatureExtractorImpl(
                     faceDetection, null, faceKeyPoint,
                     faceAlignment, faceRecognition, faceAttribute
