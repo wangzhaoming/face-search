@@ -74,11 +74,12 @@
   facesearch的swagger文档： http://127.0.0.1:56789/doc.html
 ```
 
-* 项目编译
+* 项目编译，并打包为docker镜像
 ```
-1、克隆项目
+1、java版本最低为：11；安装maven编译工具。安装docker。
+2、克隆项目
   git clone https://gitee.com/open-visual/face-search.git
-2、项目打包
+3、项目打包
    cd face-search && sh scripts/docker_build.sh
 ```
 
