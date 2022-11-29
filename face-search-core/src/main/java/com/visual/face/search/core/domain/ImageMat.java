@@ -681,8 +681,12 @@ public class ImageMat implements Serializable {
      */
     public void release(){
         if(this.mat != null){
-            this.mat.release();
-            this.mat = null;
+            try {
+                this.mat.release();
+                this.mat = null;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
