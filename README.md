@@ -30,6 +30,10 @@
 
 &ensp; &ensp; 2、[PCN](https://github.com/Rock-100/FaceKit/tree/master/PCN)
 
+### 版本2.0.1更新
+
+* 1、修复PCN模型存在的潜在内存泄露问题
+
 ### 版本2.0.0更新
 
 * 1、添加对opensearch的支持，删除对proxima与milvus向量引擎的支持
@@ -37,7 +41,7 @@
 
 ### 项目文档
 
-* 在线文档：[文档-2.0.0](scripts/docs/2.0.0.md)
+* 在线文档：[文档-2.0.1](scripts/docs/2.0.0.md)
 
 * swagger文档：启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
 
@@ -48,12 +52,12 @@
 <dependency>
     <groupId>com.visual.face.search</groupId>
     <artifactId>face-search-client</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 * 其他语言依赖
 
-&ensp; &ensp;使用restful接口：[文档-2.0.0](scripts/docs/2.0.0.md)
+&ensp; &ensp;使用restful接口：[文档-2.0.1](scripts/docs/2.0.0.md)
 
 
 ### 项目部署
