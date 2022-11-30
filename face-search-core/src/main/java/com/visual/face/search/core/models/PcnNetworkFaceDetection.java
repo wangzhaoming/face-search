@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetection {
 
+    public final static int ValueOfPcnMaxSide = 512;
+    public final static String KeyOfPcnMaxSide = "pcn-max-side";
     //常量参数
     private final static float stride_ = 8;
     private final static float minFace_ = 28;
@@ -65,8 +67,15 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
         Mat resizeMat = null;
         ImageMat imageMat = image.clone();
         try {
+            //防止分辨率过高，导致内存持续增加
+            int maxSide = getMaxSide(params);
             mat = imageMat.toCvMat();
-            float scale = (float) ((mat.size().height > mat.size().width) ? mat.size().width/512: mat.size().height/512);
+            Size size = mat.size();
+            float scale = 1.0f;
+            if(size.height > maxSide && size.width > maxSide){
+                scale = (float) ((size.height > size.width) ? size.width/maxSide: size.height/maxSide);
+            }
+            //推理
             resizeMat = resize_img_release_mat(mat.clone(), scale);
             imgPad = pad_img_release_mat(resizeMat.clone());
             float[] iouThs = iouTh <= 0 ? defIouThs : new float[]{iouTh, iouTh, 0.3f};
@@ -82,6 +91,20 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
     }
 
     /********************************分割线*************************************/
+
+    private static int getMaxSide(Map<String, Object> params){
+        try {
+            if(null != params && params.containsKey(KeyOfPcnMaxSide)){
+                Object value = params.get(KeyOfPcnMaxSide);
+                if(null != value && !value.toString().trim().isEmpty()){
+                    return Integer.parseInt(value.toString());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ValueOfPcnMaxSide;
+    }
 
     private static Mat pad_img_release_mat(Mat mat){
         try {
