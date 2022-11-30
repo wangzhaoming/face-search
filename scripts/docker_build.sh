@@ -1,4 +1,4 @@
-version='2.0.0'
+version='2.0.1'
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 cd ${SHELL_FOLDER}
 
