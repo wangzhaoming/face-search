@@ -33,7 +33,7 @@ public class FaceSearchExample {
         sampleColumns.add(FiledColumn.build().setName("name").setDataType(FiledDataType.STRING).setComment("姓名"));
         //人脸属性字段
         List<FiledColumn> faceColumns = new ArrayList<>();
-//        faceColumns.add(FiledColumn.build().setName("label").setDataType(FiledDataType.STRING).setComment("标签1"));
+        faceColumns.add(FiledColumn.build().setName("label").setDataType(FiledDataType.STRING).setComment("标签1"));
         //待创建的人脸库信息
         Collect collect = Collect.build().setCollectionComment("人脸库").setSampleColumns(sampleColumns).setFaceColumns(faceColumns);
         //删除集合
@@ -64,7 +64,7 @@ public class FaceSearchExample {
                 if(createSample.ok()){
                     for(File image : files){
                         KeyValues faceData = KeyValues.build();
-//                        faceData.add(KeyValue.build("label", "标签-" + name));
+                        faceData.add(KeyValue.build("label", "标签-" + name));
                         String imageBase64 = Base64Util.encode(image.getAbsolutePath());
                         Face face = Face.build(sampleId).setFaceData(faceData).setImageBase64(imageBase64)
                                 .setMinConfidenceThresholdWithThisSample(50f)
