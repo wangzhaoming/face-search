@@ -49,7 +49,7 @@ public class FaceSearchExample {
 
     /**添加样本数据*/
     public static void index(){
-        String indexPath = "face-search-test/src/main/resources/image/validate/noface";
+        String indexPath = "face-search-test/src/main/resources/image/validate/index";
         for(String name : Objects.requireNonNull(new File(indexPath).list())){
             System.out.println(name);
             File files[] = Paths.get(indexPath, name).toFile().listFiles();
@@ -122,8 +122,8 @@ public class FaceSearchExample {
 
     /**main**/
     public static void main(String[] args) {
-//        collect();
-//        index();
+        collect();
+        index();
         search();
     }
 
