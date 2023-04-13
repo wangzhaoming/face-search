@@ -66,9 +66,9 @@ public class ImageMat implements Serializable {
     public static ImageMat fromBase64(String base64Str){
         InputStream inputStream = null;
         try {
-            // 新版本JDK被移除，替换为Base64.Decoder
-            // BASE64Decoder decoder = new BASE64Decoder();
-            // byte[] data = decoder.decodeBuffer(base64Str);
+            if(base64Str.contains(",")){
+                base64Str = base64Str.substring(base64Str.indexOf(",")+1);
+            }
             Base64.Decoder decoder = Base64.getMimeDecoder();
             byte[] data = decoder.decode(base64Str);
             inputStream = new ByteArrayInputStream(data);
