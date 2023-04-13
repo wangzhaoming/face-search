@@ -82,7 +82,6 @@ public class FaceSearchExample {
         String searchPath = "face-search-test/src/main/resources/image/validate/search";
         for(File image : Objects.requireNonNull(new File(searchPath).listFiles())){
             String imageBase64 = Base64Util.encode(image.getAbsolutePath());
-            System.out.println(imageBase64);
             Long s = System.currentTimeMillis();
             Response<List<SearchRep>> listResponse = faceSearch.search()
                 .search(Search.build(imageBase64)
