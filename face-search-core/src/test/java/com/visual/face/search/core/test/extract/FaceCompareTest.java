@@ -24,8 +24,8 @@ public class FaceCompareTest extends BaseTest {
     private static String modelScrfdPath = "face-search-core/src/main/resources/model/onnx/detection_face_scrfd/scrfd_500m_bnkps.onnx";
     private static String modelCoordPath = "face-search-core/src/main/resources/model/onnx/keypoint_coordinate/coordinate_106_mobilenet_05.onnx";
     private static String modelArcPath = "face-search-core/src/main/resources/model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx";
-    private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_fcae_seeta/face_recognizer_512.onnx";
-//    private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_fcae_seeta/face_recognizer_1024.onnx";
+    private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_face_seeta/face_recognizer_512.onnx";
+//    private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_face_seeta/face_recognizer_1024.onnx";
     private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
 //    private static String imagePath = "face-search-core/src/test/resources/images/faces";
