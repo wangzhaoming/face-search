@@ -121,6 +121,8 @@ public class ModelConfig {
     public FaceRecognition getFaceRecognition(){
         if(faceRecognitionName.equalsIgnoreCase("InsightArcFaceRecognition")){
             return new InsightArcFaceRecognition(getModelPath(faceRecognitionName, faceRecognitionNameModel)[0], faceRecognitionNameThread);
+        }else if(faceRecognitionName.equalsIgnoreCase("SeetaFaceOpenRecognition")){
+            return new SeetaFaceOpenRecognition(getModelPath(faceRecognitionName, faceRecognitionNameModel)[0], faceRecognitionNameThread);
         }else{
             return new InsightArcFaceRecognition(getModelPath(faceRecognitionName, faceRecognitionNameModel)[0], faceRecognitionNameThread);
         }
