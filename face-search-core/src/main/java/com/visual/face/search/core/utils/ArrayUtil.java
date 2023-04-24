@@ -24,6 +24,22 @@ public class ArrayUtil {
         return output;
     }
 
+    public static float[] division(float[] input, float division){
+        float[] output = new float[input.length];
+        for(int i=0; i< input.length; i++){
+            output[i] = input[i] / division;
+        }
+        return output;
+    }
+
+    public static double matrixNorm(float[] matrix){
+        return matrixNorm(new double[][]{floatToDouble(matrix)});
+    }
+
+    public static double matrixNorm(double[] matrix){
+        return matrixNorm(new double[][]{matrix});
+    }
+
     public static double matrixNorm(double[][] matrix){
         double sum=0.0;
         for(double[] temp1:matrix){

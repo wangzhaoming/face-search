@@ -9,7 +9,6 @@ import com.visual.face.search.core.extract.FaceFeatureExtractor;
 import com.visual.face.search.core.extract.FaceFeatureExtractorImpl;
 import com.visual.face.search.core.models.*;
 import com.visual.face.search.core.test.base.BaseTest;
-import com.visual.face.search.core.utils.CropUtil;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -31,7 +30,7 @@ public class FaceFeatureExtractTest extends BaseTest {
     private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
 //    private static String imagePath = "face-search-core/src/test/resources/images/faces";
-    private static String imagePath = "/Users/diven/workspace/python/kuainiu/beidou-spoofing/test/datas/eval_liveness_v1/real";
+    private static String imagePath = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
 
 
     public static void main(String[] args) {
