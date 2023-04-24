@@ -202,6 +202,10 @@ public class ModelConfig {
             return new String[]{basePath + "model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx"};
         }
 
+        if((null == modelPath || modelPath.length != 1) && "SeetaFaceOpenRecognition".equalsIgnoreCase(modelName)){
+            return new String[]{basePath + "model/onnx/recognition_face_seeta/face_recognizer_512.onnx"};
+        }
+
         if((null == modelPath || modelPath.length != 1) && "InsightAttributeDetection".equalsIgnoreCase(modelName)){
             return new String[]{basePath + "model/onnx/attribute_gender_age/insight_gender_age.onnx"};
         }
