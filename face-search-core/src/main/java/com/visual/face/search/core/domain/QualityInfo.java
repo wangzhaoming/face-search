@@ -22,7 +22,7 @@ public class QualityInfo {
 
 
     public boolean isMask(){
-        return true;
+        return null != this.maskPoints && this.maskPoints.isMask();
     }
 
 
@@ -43,6 +43,10 @@ public class QualityInfo {
 
         public float getScore() {
             return score;
+        }
+
+        public boolean isMask(){
+            return this.score >= 0.5;
         }
 
         @Override
@@ -107,6 +111,19 @@ public class QualityInfo {
         public MaskPoints add(MaskPoint...point){
             super.addAll(Arrays.asList(point));
             return this;
+        }
+
+        /**
+         * 判定是否存在遮挡
+         * @return
+         */
+        public boolean isMask(){
+            for(MaskPoint point : this){
+                if(point.isMask()){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

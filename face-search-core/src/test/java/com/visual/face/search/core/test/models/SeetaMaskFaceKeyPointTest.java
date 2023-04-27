@@ -41,10 +41,10 @@ public class SeetaMaskFaceKeyPointTest extends BaseTest {
                 QualityInfo.MaskPoints maskPoints = keyPointInfer.inference(cropImageMat, null);
                 System.out.println(maskPoints);
                 for(QualityInfo.MaskPoint maskPoint : maskPoints){
-                    if(maskPoint.score >= 0.5){
-                        Imgproc.circle(cropFace, new Point(maskPoint.x, maskPoint.y), 3, new Scalar(0,0,255), -1);
+                    if(maskPoint.isMask()){
+                        Imgproc.circle(cropFace, new Point(maskPoint.x, maskPoint.y), 3, new Scalar(0, 0, 255), -1);
                     }else{
-                        Imgproc.circle(cropFace, new Point(maskPoint.x, maskPoint.y), 3, new Scalar(255, 0,0), -1);
+                        Imgproc.circle(cropFace, new Point(maskPoint.x, maskPoint.y), 3, new Scalar(255, 0, 0), -1);
                     }
                 }
                 HighGui.imshow(fileName, cropFace);
