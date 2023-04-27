@@ -264,7 +264,7 @@ public class ImageMat implements Serializable {
     }
 
     /**
-     * 对图像进行预处理,并释放原始图片数据
+     * 对图像进行预处理,并释放原始图片数据:（先交换RB通道（swapRB），再减法（mean），最后缩放（scale））
      * @param scale     图像各通道数值的缩放比例
      * @param mean      用于各通道减去的值，以降低光照的影响
      * @param swapRB    交换RB通道，默认为False.

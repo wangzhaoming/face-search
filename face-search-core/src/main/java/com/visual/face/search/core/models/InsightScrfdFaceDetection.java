@@ -24,6 +24,10 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
     public final static float defScoreTh = 0.5f;
     //人脸重叠iou阈值
     public final static float defIouTh = 0.7f;
+    //给人脸框一个默认的缩放
+    public final static float defBoxScale = 1.0f;
+    //人脸框缩放参数KEY
+    public final static String boxScaleParamKey = "boxScale";
 
     /**
      * 构造函数
@@ -48,6 +52,7 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
         ImageMat imageMat = image.clone();
         try {
             float imgScale = 1.0f;
+            float boxScale = getBoxScale(params);
             iouTh = iouTh <= 0 ? defIouTh : iouTh;
             scoreTh = scoreTh <= 0 ? defScoreTh : scoreTh;
             int imageWidth = imageMat.getWidth(), imageHeight = imageMat.getHeight();
@@ -68,7 +73,7 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
                     .blobFromImageAndDoReleaseMat(1.0/128, new Scalar(127.5, 127.5, 127.5), true)
                     .to4dFloatOnnxTensorAndDoReleaseMat(true);
             output = getSession().run(Collections.singletonMap(getInputName(), tensor));
-            return fitterBoxes(output, scoreTh, iouTh, tensor.getInfo().getShape()[3], imgScale);
+            return fitterBoxes(output, scoreTh, iouTh, tensor.getInfo().getShape()[3], imgScale, boxScale);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
@@ -94,7 +99,7 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
      * @return
      * @throws OrtException
      */
-    private List<FaceInfo> fitterBoxes(OrtSession.Result output, float scoreTh, float iouTh, long tensorWidth, float imgScale) throws OrtException {
+    private List<FaceInfo> fitterBoxes(OrtSession.Result output, float scoreTh, float iouTh, long tensorWidth, float imgScale, float boxScale) throws OrtException {
         //分数过滤及计算正确的人脸框值
         List<FaceInfo> faceInfos = new ArrayList<>();
         for(int index=0; index< 3; index++) {
@@ -122,7 +127,7 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
                         float pointY = (point[2*pointIndex+1] * strides[index] + anchorY) * imgScale;
                         keyPoints.add(FaceInfo.Point.build(pointX, pointY));
                     }
-                    faceInfos.add(FaceInfo.build(scores[i][0], 0, FaceInfo.FaceBox.build(x1,y1,x2,y2), keyPoints));
+                    faceInfos.add(FaceInfo.build(scores[i][0], 0, FaceInfo.FaceBox.build(x1,y1,x2,y2).scaling(boxScale), keyPoints));
                 }
             }
         }
@@ -147,4 +152,20 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
         return faces;
     }
 
+    private float getBoxScale(Map<String, Object> params){
+        float boxScale = 0;
+        try {
+            if(null != params && params.containsKey(boxScaleParamKey)){
+                Object value = params.get(boxScaleParamKey);
+                if(null != value){
+                    if (value instanceof Number){
+                        boxScale = ((Number) value).floatValue();
+                    }else{
+                        boxScale = Float.parseFloat(value.toString());
+                    }
+                }
+            }
+        }catch (Exception e){}
+        return boxScale > 0 ? boxScale : defBoxScale;
+    }
 }

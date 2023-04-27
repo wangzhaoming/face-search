@@ -15,6 +15,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class FaceCompareTest extends BaseTest {
 
@@ -25,19 +26,22 @@ public class FaceCompareTest extends BaseTest {
     private static String modelCoordPath = "face-search-core/src/main/resources/model/onnx/keypoint_coordinate/coordinate_106_mobilenet_05.onnx";
     private static String modelArcPath = "face-search-core/src/main/resources/model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx";
     private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_face_seeta/face_recognizer_512.onnx";
-//    private static String modelSeetaPath = "face-search-core/src/main/resources/model/onnx/recognition_face_seeta/face_recognizer_1024.onnx";
     private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
-//    private static String imagePath = "face-search-core/src/test/resources/images/faces";
+    private static String imagePath = "face-search-test/src/main/resources/image/validate/index/马化腾/";
+    private static String imagePath3 = "face-search-test/src/main/resources/image/validate/index/雷军/";
 //    private static String imagePath1 = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
 //    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
-    private static String imagePath1 = "face-search-core/src/test/resources/images/faces/compare/1682052661610.jpg";
-    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/compare/1682052669004.jpg";
+//    private static String imagePath1 = "face-search-core/src/test/resources/images/faces/compare/1682052661610.jpg";
+//    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/compare/1682052669004.jpg";
 //    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/compare/1682053163961.jpg";
-
-
+//    private static String imagePath1 = "face-search-test/src/main/resources/image/validate/index/张一鸣/1c7abcaf2dabdd2bc08e90c224d4c381.jpeg";
+    private static String imagePath1 = "face-search-test/src/main/resources/image/validate/index/张一鸣/0762c790db41a64f8f3f97598a825372.jpeg";
+    private static String imagePath2 = "face-search-test/src/main/resources/image/validate/index/张一鸣/ea191e61bdd4be8fddc89b828f5399b6.jpeg";
     public static void main(String[] args) {
-//        Map<String, String> map = getImagePathMap(imagePath);
+        //口罩模型0.48，light模型0.52，normal模型0.62
+        Map<String, String> map1 = getImagePathMap(imagePath);
+        Map<String, String> map2 = getImagePathMap(imagePath3);
         FaceDetection insightScrfdFaceDetection = new InsightScrfdFaceDetection(modelScrfdPath, 1);
         FaceKeyPoint insightCoordFaceKeyPoint = new InsightCoordFaceKeyPoint(modelCoordPath, 1);
         FaceRecognition insightArcFaceRecognition = new InsightArcFaceRecognition(modelArcPath, 1);
@@ -49,24 +53,28 @@ public class FaceCompareTest extends BaseTest {
 
         FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(
                 insightScrfdFaceDetection, pcnNetworkFaceDetection, insightCoordFaceKeyPoint,
-                simple005pFaceAlignment, insightSeetaFaceRecognition, insightFaceAttribute);
+                simple005pFaceAlignment, insightArcFaceRecognition, insightFaceAttribute);
 
-        Mat image1 = Imgcodecs.imread(imagePath1);
-        long s = System.currentTimeMillis();
-        ExtParam extParam = ExtParam.build().setMask(false).setTopK(20).setScoreTh(0).setIouTh(0);
-        FaceImage faceImage1 = extractor.extract(ImageMat.fromCVMat(image1), extParam, null);
-        List<FaceInfo> faceInfos1 = faceImage1.faceInfos();
-        long e = System.currentTimeMillis();
-        System.out.println("image1 extract cost:"+(e-s)+"ms");;
+        for(String file1 : map1.keySet()){
+            for(String file2 : map2.keySet()){
+                Mat image1 = Imgcodecs.imread(map1.get(file1));
+                long s = System.currentTimeMillis();
+                ExtParam extParam = ExtParam.build().setMask(false).setTopK(20).setScoreTh(0).setIouTh(0);
+                FaceImage faceImage1 = extractor.extract(ImageMat.fromCVMat(image1), extParam, null);
+                List<FaceInfo> faceInfos1 = faceImage1.faceInfos();
+                long e = System.currentTimeMillis();
+                System.out.println("image1 extract cost:"+(e-s)+"ms");;
 
-        Mat image2 = Imgcodecs.imread(imagePath2);
-        s = System.currentTimeMillis();
-        FaceImage faceImage2 = extractor.extract(ImageMat.fromCVMat(image2), extParam, null);
-        List<FaceInfo> faceInfos2 = faceImage2.faceInfos();
-        e = System.currentTimeMillis();
-        System.out.println("image2 extract cost:"+(e-s)+"ms");
-        float similarity = Similarity.cosineSimilarity(faceInfos1.get(0).embedding.embeds, faceInfos2.get(0).embedding.embeds);
-        System.out.println("face similarity="+similarity);
+                Mat image2 = Imgcodecs.imread(map2.get(file2));
+                s = System.currentTimeMillis();
+                FaceImage faceImage2 = extractor.extract(ImageMat.fromCVMat(image2), extParam, null);
+                List<FaceInfo> faceInfos2 = faceImage2.faceInfos();
+                e = System.currentTimeMillis();
+                System.out.println("image2 extract cost:"+(e-s)+"ms");
+                float similarity = Similarity.cosineSimilarityNorm(faceInfos1.get(0).embedding.embeds, faceInfos2.get(0).embedding.embeds);
+                System.out.println(file1 + ","+ file2 + ",face similarity="+similarity);
+            }
+        }
 
     }
 }
