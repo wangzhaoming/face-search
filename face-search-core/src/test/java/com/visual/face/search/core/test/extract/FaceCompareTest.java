@@ -36,12 +36,12 @@ public class FaceCompareTest extends BaseTest {
 //    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/compare/1682052669004.jpg";
 //    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/compare/1682053163961.jpg";
 //    private static String imagePath1 = "face-search-test/src/main/resources/image/validate/index/张一鸣/1c7abcaf2dabdd2bc08e90c224d4c381.jpeg";
-    private static String imagePath1 = "face-search-test/src/main/resources/image/validate/index/张一鸣/0762c790db41a64f8f3f97598a825372.jpeg";
-    private static String imagePath2 = "face-search-test/src/main/resources/image/validate/index/张一鸣/ea191e61bdd4be8fddc89b828f5399b6.jpeg";
+    private static String imagePath1 = "face-search-core/src/test/resources/images/faces/small/1.png";
+    private static String imagePath2 = "face-search-core/src/test/resources/images/faces/small/2.png";
     public static void main(String[] args) {
         //口罩模型0.48，light模型0.52，normal模型0.62
-        Map<String, String> map1 = getImagePathMap(imagePath);
-        Map<String, String> map2 = getImagePathMap(imagePath3);
+        Map<String, String> map1 = getImagePathMap(imagePath1);
+        Map<String, String> map2 = getImagePathMap(imagePath2);
         FaceDetection insightScrfdFaceDetection = new InsightScrfdFaceDetection(modelScrfdPath, 1);
         FaceKeyPoint insightCoordFaceKeyPoint = new InsightCoordFaceKeyPoint(modelCoordPath, 1);
         FaceRecognition insightArcFaceRecognition = new InsightArcFaceRecognition(modelArcPath, 1);
