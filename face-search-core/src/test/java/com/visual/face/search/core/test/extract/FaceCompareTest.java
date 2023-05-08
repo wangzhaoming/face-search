@@ -53,7 +53,7 @@ public class FaceCompareTest extends BaseTest {
 
         FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(
                 insightScrfdFaceDetection, pcnNetworkFaceDetection, insightCoordFaceKeyPoint,
-                simple005pFaceAlignment, insightArcFaceRecognition, insightFaceAttribute);
+                simple005pFaceAlignment, insightSeetaFaceRecognition, insightFaceAttribute);
 
         for(String file1 : map1.keySet()){
             for(String file2 : map2.keySet()){
