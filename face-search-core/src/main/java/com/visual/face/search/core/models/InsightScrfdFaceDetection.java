@@ -27,7 +27,11 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
     //给人脸框一个默认的缩放
     public final static float defBoxScale = 1.0f;
     //人脸框缩放参数KEY
-    public final static String boxScaleParamKey = "boxScale";
+    public final static String scrfdFaceboxScaleParamKey = "scrfdFaceboxScale";
+    //人脸框默认需要进行角度检测
+    public final static boolean defNeedCheckFaceAngle = true;
+    //是否需要进行角度检测的参数KEY
+    public final static String scrfdFaceNeedCheckFaceAngleParamKey = "scrfdFaceNeedCheckFaceAngle";
 
     /**
      * 构造函数
@@ -73,7 +77,10 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
                     .blobFromImageAndDoReleaseMat(1.0/128, new Scalar(127.5, 127.5, 127.5), true)
                     .to4dFloatOnnxTensorAndDoReleaseMat(true);
             output = getSession().run(Collections.singletonMap(getInputName(), tensor));
-            return fitterBoxes(output, scoreTh, iouTh, tensor.getInfo().getShape()[3], imgScale, boxScale);
+            //获取人脸信息
+            List<FaceInfo> faceInfos = fitterBoxes(output, scoreTh, iouTh, tensor.getInfo().getShape()[3], imgScale, boxScale);
+            //对人脸进行角度检查
+            return this.checkFaceAngle(faceInfos, this.getNeedCheckFaceAngle(params));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
@@ -152,11 +159,68 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
         return faces;
     }
 
+    /**
+     * 对人脸进行角度检测，这里通过5个关键点来确定当前人脸的角度
+     * @param faceInfos             人脸信息
+     * @param needCheckFaceAngle    是否启用检测
+     * @return
+     */
+    private List<FaceInfo> checkFaceAngle(List<FaceInfo> faceInfos, boolean needCheckFaceAngle){
+        if(!needCheckFaceAngle || null == faceInfos || faceInfos.isEmpty()){
+            return faceInfos;
+        }
+        for(FaceInfo faceInfo : faceInfos){
+            //计算当前人脸的角度数据
+            float ax1 = faceInfo.points.get(1).x;
+            float ay1 = faceInfo.points.get(1).y;
+            float ax2 = faceInfo.points.get(0).x;
+            float ay2 = faceInfo.points.get(0).y;
+            int atan = Double.valueOf(Math.atan2((ay2-ay1), (ax2-ax1)) / Math.PI * 180).intValue();
+            int angle = (180 - atan + 360) % 360;
+            int ki = (angle + 45) % 360 / 90;
+            int rotate = angle - (90 * ki); //
+            float scaling = 1  + Double.valueOf(Math.abs(Math.sin(Math.toRadians(rotate)))).floatValue() / 3;
+            faceInfo.angle = angle;
+            //重组坐标点, 旋转及缩放
+            if(ki == 0){
+                FaceInfo.Point leftTop = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y1());
+                FaceInfo.Point rightTop = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y1());
+                FaceInfo.Point rightBottom = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y2());
+                FaceInfo.Point leftBottom = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y2());
+                faceInfo.box =  new FaceInfo.FaceBox(leftTop, rightTop, rightBottom, leftBottom);
+                faceInfo.box = faceInfo.box.rotate(rotate).scaling(scaling).rotate(-angle);
+            }else if(ki == 1){
+                FaceInfo.Point leftTop = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y2());
+                FaceInfo.Point rightTop = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y1());
+                FaceInfo.Point rightBottom = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y1());
+                FaceInfo.Point leftBottom = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y2());
+                faceInfo.box =  new FaceInfo.FaceBox(leftTop, rightTop, rightBottom, leftBottom);
+                faceInfo.box = faceInfo.box.rotate(rotate).scaling(scaling).rotate(-angle);
+            }else if(ki == 2){
+                FaceInfo.Point leftTop = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y2());
+                FaceInfo.Point rightTop = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y2());
+                FaceInfo.Point rightBottom = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y1());
+                FaceInfo.Point leftBottom = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y1());
+                faceInfo.box =  new FaceInfo.FaceBox(leftTop, rightTop, rightBottom, leftBottom);
+                faceInfo.box = faceInfo.box.rotate(rotate).scaling(scaling).rotate(-angle);
+            }else if(ki == 3){
+                FaceInfo.Point leftTop = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y1());
+                FaceInfo.Point rightTop = FaceInfo.Point.build(faceInfo.box.x2(),faceInfo.box.y2());
+                FaceInfo.Point rightBottom = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y2());
+                FaceInfo.Point leftBottom = FaceInfo.Point.build(faceInfo.box.x1(),faceInfo.box.y1());
+                faceInfo.box =  new FaceInfo.FaceBox(leftTop, rightTop, rightBottom, leftBottom);
+                faceInfo.box = faceInfo.box.rotate(rotate).scaling(scaling).rotate(-angle);
+            }
+        }
+        return faceInfos;
+    }
+
+    /**人脸框的默认缩放比例**/
     private float getBoxScale(Map<String, Object> params){
         float boxScale = 0;
         try {
-            if(null != params && params.containsKey(boxScaleParamKey)){
-                Object value = params.get(boxScaleParamKey);
+            if(null != params && params.containsKey(scrfdFaceboxScaleParamKey)){
+                Object value = params.get(scrfdFaceboxScaleParamKey);
                 if(null != value){
                     if (value instanceof Number){
                         boxScale = ((Number) value).floatValue();
@@ -167,5 +231,25 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
             }
         }catch (Exception e){}
         return boxScale > 0 ? boxScale : defBoxScale;
+    }
+
+    /**获取是否需要进行角度探测**/
+    private boolean getNeedCheckFaceAngle(Map<String, Object> params){
+        boolean needCheckFaceAngle = defNeedCheckFaceAngle;
+        try {
+            if(null != params && params.containsKey(scrfdFaceNeedCheckFaceAngleParamKey)){
+                Object value = params.get(scrfdFaceNeedCheckFaceAngleParamKey);
+                if(null != value){
+                    if (value instanceof Boolean){
+                        needCheckFaceAngle = (boolean) value;
+                    }else{
+                        needCheckFaceAngle = Boolean.parseBoolean(value.toString());
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return needCheckFaceAngle;
     }
 }
