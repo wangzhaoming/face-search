@@ -22,6 +22,7 @@ logging:
 # 模型配置
 visual:
   model:
+    baseModelPath: 'face-search-core/src/main/resources/'
     faceDetection:
       name: InsightScrfdFaceDetection
       modelPath:
@@ -83,8 +84,8 @@ spring:
       # 主库数据源
       master:
         url: jdbc:mysql://visual-face-search-mysql:3306/visual_face_search?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: visual
-        password: visual
+        username: root
+        password: root
       slave:
         # 从数据源开关/默认关闭
         enabled: false

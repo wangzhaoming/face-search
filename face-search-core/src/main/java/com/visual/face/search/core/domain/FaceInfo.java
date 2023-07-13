@@ -137,6 +137,18 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
         public float distance(Point that){
             return (float) Math.sqrt(Math.pow((this.x-that.x), 2)+Math.pow((this.y-that.y), 2));
         }
+
+        /**
+         * 将点进行平移
+         * @param top       向上移动的像素点数
+         * @param bottom    向下移动的像素点数
+         * @param left      向左移动的像素点数
+         * @param right     向右移动的像素点数
+         * @return  平移后的点
+         */
+        public Point move(int left, int right, int top, int bottom){
+            return new Point(x - left + right,  y - top + bottom);
+        }
     }
 
     /**
@@ -243,6 +255,22 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
                 float x = item.x * scale;
                 float y = item.y * scale;
                 points.add(Point.build(x, y));
+            }
+            return points;
+        }
+
+        /**
+         * 将点进行平移
+         * @param top       向上移动的像素点数
+         * @param bottom    向下移动的像素点数
+         * @param left      向左移动的像素点数
+         * @param right     向右移动的像素点数
+         * @return  平移后的点
+         */
+        public Points move(int left, int right, int top, int bottom){
+            Points points = build();
+            for(Point item : this){
+                points.add(item.move(left, right, top, bottom));
             }
             return points;
         }
@@ -417,6 +445,23 @@ public class FaceInfo implements Comparable<FaceInfo>, Serializable {
                     new Point(rightTop.x - change_x_p2_p4,  rightTop.y - change_y_p2_p4),
                     new Point(rightBottom.x + change_x_p1_p3,  rightBottom.y + change_y_p1_p3),
                     new Point(leftBottom.x + change_x_p2_p4,  leftBottom.y + change_y_p2_p4)
+            );
+        }
+
+        /**
+         * 将框进行平移
+         * @param top       向上移动的像素点数
+         * @param bottom    向下移动的像素点数
+         * @param left      向左移动的像素点数
+         * @param right     向右移动的像素点数
+         * @return  平移后的框
+         */
+        public FaceBox move(int left, int right, int top, int bottom){
+            return new FaceBox(
+                    new Point(leftTop.x - left + right,  leftTop.y - top + bottom),
+                    new Point(rightTop.x - left + right,  rightTop.y - top + bottom),
+                    new Point(rightBottom.x - left + right,  rightBottom.y - top + bottom),
+                    new Point(leftBottom.x - left + right,  leftBottom.y - top + bottom)
             );
         }
     }
