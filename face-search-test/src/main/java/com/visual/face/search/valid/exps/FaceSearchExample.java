@@ -19,9 +19,9 @@ public class FaceSearchExample {
     //本地开发模式
     public static String serverHost = "http://127.0.0.1:8080";
     //docker部署模式
-    //public static String serverHost = "http://127.0.0.1:56789";
+//    public static String serverHost = "http://172.16.24.124:56789";
     //远程测试服务
-    //public static String serverHost = "http://face-search.diven.nat300.top";
+//    public static String serverHost = "http://face-search.divenswu.com";
     public static String namespace = "namespace_1";
     public static String collectionName = "collect_20211201_v11";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);
@@ -35,7 +35,16 @@ public class FaceSearchExample {
         List<FiledColumn> faceColumns = new ArrayList<>();
         faceColumns.add(FiledColumn.build().setName("label").setDataType(FiledDataType.STRING).setComment("标签1"));
         //待创建的人脸库信息
-        Collect collect = Collect.build().setCollectionComment("人脸库").setSampleColumns(sampleColumns).setFaceColumns(faceColumns);
+        Collect collect = Collect.build()
+                .setCollectionComment("人脸库")
+                //样本属性字段
+                .setSampleColumns(sampleColumns)
+                //人脸属性字段
+                .setFaceColumns(faceColumns)
+                //是否保存人脸及图片数据信息
+                .setStorageFaceInfo(true)
+                //目前只实现了数据库存储，对其他类型存储实现StorageImageService接口即可
+                .setStorageEngine(StorageEngine.CURR_DB);
         //删除集合
         Response<Boolean> deleteCollect =  faceSearch.collect().deleteCollect();
         System.out.println(deleteCollect);
@@ -66,9 +75,10 @@ public class FaceSearchExample {
                         KeyValues faceData = KeyValues.build();
                         faceData.add(KeyValue.build("label", "标签-" + name));
                         String imageBase64 = Base64Util.encode(image.getAbsolutePath());
-                        Face face = Face.build(sampleId).setFaceData(faceData).setImageBase64(imageBase64)
-                                .setMinConfidenceThresholdWithThisSample(50f)
-                                .setMaxConfidenceThresholdWithOtherSample(50f);
+                        Face face = Face.build(sampleId).setFaceData(faceData)
+                                .setMinConfidenceThresholdWithThisSample(0f)
+                                .setMaxConfidenceThresholdWithOtherSample(50f)
+                                .setImageBase64(imageBase64);
                         Response<FaceRep> createFace = faceSearch.face().createFace(face);
                         System.out.println("createFace:" + createFace);
                     }
