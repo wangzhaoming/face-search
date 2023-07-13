@@ -20,8 +20,9 @@ public class InsightScrfdFaceDetectionTest extends BaseTest {
     private static String modelPath = "face-search-core/src/main/resources/model/onnx/detection_face_scrfd/scrfd_500m_bnkps.onnx";
 
 //    private static String imagePath = "face-search-core/src/test/resources/images/faces";
-    private static String imagePath = "face-search-core/src/test/resources/images/faces/rotate/rotate_0001.jpg";
-//    private static String imagePath = "face-search-core/src/test/resources/images/faces/rotate";
+//    private static String imagePath = "face-search-core/src/test/resources/images/faces/rotate/rotate_0001.jpg";
+    private static String imagePath = "face-search-core/src/test/resources/images/faces/rotate";
+//    private static String imagePath = "face-search-core/src/test/resources/images/faces/big/big_002.jpg";
 
 
     public static void main(String[] args) {
