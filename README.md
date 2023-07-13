@@ -37,6 +37,7 @@
 * 3、添加SeetaFaceOpenRecognition的人脸特征提取器，目前人脸特征提取器支持InsightArcFaceRecognition与SeetaFaceOpenRecognition。
 * 4、修复由于人脸过小，导致对齐异常的BUG。
 * 5、程序添加了SeetaFace6的人脸关键点遮挡模型。
+* 6、升级opencv、opensearch、onnxruntime的maven依赖版本。
 
 ### 版本2.0.1更新
 
