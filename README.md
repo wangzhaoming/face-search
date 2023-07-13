@@ -50,7 +50,7 @@
 
 ### 项目文档
 
-* 在线文档：[文档-2.0.1](scripts/docs/2.0.0.md)
+* 在线文档：[文档-2.1.0](scripts/docs/2.1.0.md)
 
 * swagger文档：启动项目且开启swagger，访问：host:port/doc.html, 如 http://127.0.0.1:8080/doc.html
 
@@ -61,12 +61,12 @@
 <dependency>
     <groupId>com.visual.face.search</groupId>
     <artifactId>face-search-client</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 * 其他语言依赖
 
-&ensp; &ensp;使用restful接口：[文档-2.0.1](scripts/docs/2.0.0.md)
+&ensp; &ensp;使用restful接口：[文档-2.1.0](scripts/docs/2.1.0.md)
 
 
 ### 项目部署
@@ -117,11 +117,11 @@
 
 ### 性能优化
 
-* 项目中为了提高人脸的检出率，使用了主要和次要的人脸检测模型，目前实现了两种人脸检测模型insightface和PCN，在docker的服务中，默认主服务为PCN，备用服务为insightface。insightface的效率高，但针对于旋转了大角度的人脸检出率不高，而pcn则可以识别大角度旋转的图片，但效率低一些。若图像均为正脸的图像，建议使用insightface为主模型，pcn为备用模型，如何切换，请查看部署参数。
+* 项目中为了提高人脸的检出率，使用了主要和次要的人脸检测模型，目前实现了两种人脸检测模型Insightface和PCN，在docker的服务中，默认主服务为Insightface，备用服务为PCN。insightface的效率高，但针对于旋转了大角度的人脸检出率不高，而pcn则可以识别大角度旋转的图片，但效率低一些。若图像均为正脸的图像，建议使用insightface为主模型，pcn为备用模型，如何切换，请查看部署参数。
 
 ### 项目演示
 
-* 2.0.0 测试用例(做了优化，增强了搜索结果的区分度)：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
+* 2.1.0 测试用例：face-search-test[测试用例-FaceSearchExample](https://gitee.com/open-visual/face-search/blob/master/face-search-test/src/main/java/com/visual/face/search/valid/exps/FaceSearchExample.java)
 
 * ![输入图片说明](scripts/images/validate-2.0.0.jpg)
 
@@ -132,7 +132,7 @@
 
 ### 交流群
 
-* 钉钉交流群
+* 钉钉交流群(已解散)
 
     关注微信公众号回复：钉钉群
 
