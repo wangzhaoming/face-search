@@ -253,6 +253,55 @@ public class ImageMat implements Serializable {
     }
 
     /**
+     * 对图像进行补边操作，不释放原始的图片
+     * @param top           向上扩展的高度
+     * @param bottom        向下扩展的高度
+     * @param left          向左扩展的宽度
+     * @param right         向右扩展的宽度
+     * @param borderType    补边的类型
+     * @return  补边后的图像
+     */
+    public ImageMat copyMakeBorderAndNotReleaseMat(int top, int bottom, int left, int right, int borderType){
+        return this.copyMakeBorder(top, bottom, left, right, borderType, false);
+    }
+
+    /**
+     * 对图像进行补边操作，并且释放原始的图片
+     * @param top           向上扩展的高度
+     * @param bottom        向下扩展的高度
+     * @param left          向左扩展的宽度
+     * @param right         向右扩展的宽度
+     * @param borderType    补边的类型
+     * @return  补边后的图像
+     */
+    public ImageMat copyMakeBorderAndDoReleaseMat(int top, int bottom, int left, int right, int borderType){
+        return this.copyMakeBorder(top, bottom, left, right, borderType, true);
+    }
+
+    /**
+     * 对图像进行补边操作
+     * @param top           向上扩展的高度
+     * @param bottom        向下扩展的高度
+     * @param left          向左扩展的宽度
+     * @param right         向右扩展的宽度
+     * @param borderType    补边的类型
+     * @param release       是否释放原始的图片
+     * @return  补边后的图像
+     */
+    private ImageMat copyMakeBorder(int top, int bottom, int left, int right, int borderType, boolean release){
+        try {
+            Mat tempMat = new Mat();
+            Core.copyMakeBorder(mat, tempMat, top, bottom, left, right, borderType);
+            return new ImageMat(tempMat);
+        }finally {
+            if(release){
+                this.release();
+            }
+        }
+    }
+
+
+    /**
      * 对图像进行预处理,不释放原始图片数据
      * @param scale     图像各通道数值的缩放比例
      * @param mean      用于各通道减去的值，以降低光照的影响
@@ -264,7 +313,7 @@ public class ImageMat implements Serializable {
     }
 
     /**
-     * 对图像进行预处理,并释放原始图片数据
+     * 对图像进行预处理,并释放原始图片数据:（先交换RB通道（swapRB），再减法（mean），最后缩放（scale））
      * @param scale     图像各通道数值的缩放比例
      * @param mean      用于各通道减去的值，以降低光照的影响
      * @param swapRB    交换RB通道，默认为False.

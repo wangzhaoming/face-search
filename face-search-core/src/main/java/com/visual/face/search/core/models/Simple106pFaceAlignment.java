@@ -10,6 +10,9 @@ import java.util.Map;
 
 public class Simple106pFaceAlignment implements FaceAlignment {
 
+    /**最小边的长度**/
+    private final static float minEdgeLength = 128;
+
     /**矫正的偏移**/
     private final static double x_offset = 0;
     private final static double y_offset = -8;
@@ -125,14 +128,31 @@ public class Simple106pFaceAlignment implements FaceAlignment {
 
     @Override
     public ImageMat inference(ImageMat imageMat, FaceInfo.Points imagePoint, Map<String, Object> params) {
-        double [][] image_points;
-        if(imagePoint.size() == 106){
-            image_points = imagePoint.toDoubleArray();
-        }else{
-            throw new RuntimeException("need 106 point, but get "+ imagePoint.size());
+        ImageMat alignmentImageMat = null;
+        try {
+            FaceInfo.Points alignmentPoints = imagePoint;
+            if(imageMat.getWidth() < minEdgeLength || imageMat.getHeight() < minEdgeLength){
+                float scale = minEdgeLength / Math.min(imageMat.getWidth(), imageMat.getHeight());
+                int newWidth = Float.valueOf(imageMat.getWidth() * scale).intValue();
+                int newHeight = Float.valueOf(imageMat.getHeight() * scale).intValue();
+                alignmentImageMat = imageMat.resizeAndNoReleaseMat(newWidth, newHeight);
+                alignmentPoints = imagePoint.operateMultiply(scale);
+            }else{
+                alignmentImageMat = imageMat.clone();
+            }
+            double [][] image_points;
+            if(alignmentPoints.size() == 106){
+                image_points = alignmentPoints.toDoubleArray();
+            }else{
+                throw new RuntimeException("need 106 point, but get "+ alignmentPoints.size());
+            }
+            Mat alignMat = AlignUtil.alignedImage(alignmentImageMat.toCvMat(), image_points, 112, 112, dst_points);
+            return ImageMat.fromCVMat(alignMat);
+        }finally {
+            if(null != alignmentImageMat){
+                alignmentImageMat.release();
+            }
         }
-        Mat alignMat = AlignUtil.alignedImage(imageMat.toCvMat(), image_points, 112, 112, dst_points);
-        return ImageMat.fromCVMat(alignMat);
     }
 
 }

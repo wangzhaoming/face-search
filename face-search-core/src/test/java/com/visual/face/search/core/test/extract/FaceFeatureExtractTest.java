@@ -1,5 +1,6 @@
 package com.visual.face.search.core.test.extract;
 
+import com.alibaba.fastjson.JSONObject;
 import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.domain.ExtParam;
 import com.visual.face.search.core.domain.FaceImage;
@@ -29,8 +30,9 @@ public class FaceFeatureExtractTest extends BaseTest {
     private static String modelArcPath = "face-search-core/src/main/resources/model/onnx/recognition_face_arc/glint360k_cosface_r18_fp16_0.1.onnx";
     private static String modelArrPath = "face-search-core/src/main/resources/model/onnx/attribute_gender_age/insight_gender_age.onnx";
 
-//    private static String imagePath = "face-search-core/src/test/resources/images/faces";
-    private static String imagePath = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
+    private static String imagePath = "face-search-core/src/test/resources/images/faces";
+//    private static String imagePath = "face-search-core/src/test/resources/images/faces/debug/debug_0001.jpg";
+//    private static String imagePath = "face-search-core/src/test/resources/images/faces/rotate/rotate_0002.jpg";
 
 
     public static void main(String[] args) {
@@ -44,7 +46,7 @@ public class FaceFeatureExtractTest extends BaseTest {
         FaceAttribute insightFaceAttribute = new InsightAttributeDetection(modelArrPath, 1);
 
         FaceFeatureExtractor extractor = new FaceFeatureExtractorImpl(
-                pcnNetworkFaceDetection, insightScrfdFaceDetection, insightCoordFaceKeyPoint,
+                insightScrfdFaceDetection, pcnNetworkFaceDetection, insightCoordFaceKeyPoint,
                 simple005pFaceAlignment, insightArcFaceRecognition, insightFaceAttribute);
         for(String fileName : map.keySet()){
             String imageFilePath = map.get(fileName);
@@ -56,7 +58,8 @@ public class FaceFeatureExtractTest extends BaseTest {
                     .setTopK(20)
                     .setScoreTh(0)
                     .setIouTh(0);
-            FaceImage faceImage = extractor.extract(ImageMat.fromCVMat(image), extParam, null);
+            Map<String, Object> params = new JSONObject().fluentPut(InsightScrfdFaceDetection.scrfdFaceNeedCheckFaceAngleParamKey, true);
+            FaceImage faceImage = extractor.extract(ImageMat.fromCVMat(image), extParam, params);
             List<FaceInfo> faceInfos = faceImage.faceInfos();
             long e = System.currentTimeMillis();
             System.out.println("fileName="+fileName+",\tcost="+(e-s)+",\t"+faceInfos);
@@ -67,7 +70,7 @@ public class FaceFeatureExtractTest extends BaseTest {
                 Imgproc.line(image, new Point(box.rightTop.x, box.rightTop.y), new Point(box.rightBottom.x, box.rightBottom.y), new Scalar(255,0,0), 1);
                 Imgproc.line(image, new Point(box.rightBottom.x, box.rightBottom.y), new Point(box.leftBottom.x, box.leftBottom.y), new Scalar(255,0,0), 1);
                 Imgproc.line(image, new Point(box.leftBottom.x, box.leftBottom.y), new Point(box.leftTop.x, box.leftTop.y), new Scalar(255,0,0), 1);
-                Imgproc.putText(image, String.valueOf(faceInfo.angle), new Point(box.leftTop.x, box.leftTop.y), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(0,0,255));
+                Imgproc.putText(image, String.valueOf(faceInfo.angle), new Point(box.leftTop.x, box.leftTop.y+15), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(0,0,255));
 //                Imgproc.rectangle(image, new Point(faceInfo.box.x1(), faceInfo.box.y1()), new Point(faceInfo.box.x2(), faceInfo.box.y2()), new Scalar(255,0,255));
 
                 FaceInfo.FaceBox box1 = faceInfo.rotateFaceBox();
