@@ -7,6 +7,9 @@ import com.visual.face.search.core.base.BaseOnnxInfer;
 import com.visual.face.search.core.base.FaceDetection;
 import com.visual.face.search.core.domain.FaceInfo;
 import com.visual.face.search.core.domain.ImageMat;
+import com.visual.face.search.core.utils.ReleaseUtil;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 
 import java.util.*;
@@ -32,6 +35,10 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
     public final static boolean defNeedCheckFaceAngle = true;
     //是否需要进行角度检测的参数KEY
     public final static String scrfdFaceNeedCheckFaceAngleParamKey = "scrfdFaceNeedCheckFaceAngle";
+    //人脸框默认需要进行角度检测
+    public final static boolean defNoFaceImageNeedMakeBorder = true;
+    //是否需要进行角度检测的参数KEY
+    public final static String scrfdNoFaceImageNeedMakeBorderParamKey = "scrfdNoFaceImageNeedMakeBorder";
 
     /**
      * 构造函数
@@ -51,6 +58,40 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
      */
     @Override
     public List<FaceInfo> inference(ImageMat image, float scoreTh, float iouTh, Map<String, Object> params) {
+        List<FaceInfo> faceInfos = this.modelInference(image, scoreTh,iouTh, params);
+        //对图像进行补边操作，进行二次识别
+        if(this.getNoFaceImageNeedMakeBorder(params) && faceInfos.isEmpty()){
+            //防止由于人脸占用大，导致检测模型识别失败
+            int t = Double.valueOf(image.toCvMat().height() * 0.2).intValue();
+            int b = Double.valueOf(image.toCvMat().height() * 0.2).intValue();
+            int l = Double.valueOf(image.toCvMat().width()  * 0.2).intValue();
+            int r = Double.valueOf(image.toCvMat().width()  * 0.2).intValue();
+            ImageMat tempMat = null;
+            try {
+                //补边识别
+                tempMat=image.copyMakeBorderAndNotReleaseMat(t, b, l, r, Core.BORDER_CONSTANT);
+                faceInfos = this.modelInference(tempMat, scoreTh,iouTh, params);
+                for(FaceInfo faceInfo : faceInfos){
+                    //还原原始的坐标
+                    faceInfo.box = faceInfo.box.move(l, 0, t, 0);
+                    faceInfo.points = faceInfo.points.move(l, 0, t, 0);
+                }
+            }finally {
+                ReleaseUtil.release(tempMat);
+            }
+        }
+        return faceInfos;
+    }
+
+
+    /**
+     * 模型推理，获取人脸信息
+     * @param image     图像信息
+     * @param scoreTh   人脸人数阈值
+     * @param iouTh     人脸iou阈值
+     * @return  人脸模型
+     */
+    public List<FaceInfo> modelInference(ImageMat image, float scoreTh, float iouTh, Map<String, Object> params) {
         OnnxTensor tensor = null;
         OrtSession.Result output = null;
         ImageMat imageMat = image.clone();
@@ -251,5 +292,25 @@ public class InsightScrfdFaceDetection extends BaseOnnxInfer implements FaceDete
             e.printStackTrace();
         }
         return needCheckFaceAngle;
+    }
+
+    /**获取是否需要对没有检测到人脸的图像进行补边二次识别**/
+    private boolean getNoFaceImageNeedMakeBorder(Map<String, Object> params){
+        boolean noFaceImageNeedMakeBorder = defNoFaceImageNeedMakeBorder;
+        try {
+            if(null != params && params.containsKey(scrfdNoFaceImageNeedMakeBorderParamKey)){
+                Object value = params.get(scrfdNoFaceImageNeedMakeBorderParamKey);
+                if(null != value){
+                    if (value instanceof Boolean){
+                        noFaceImageNeedMakeBorder = (boolean) value;
+                    }else{
+                        noFaceImageNeedMakeBorder = Boolean.parseBoolean(value.toString());
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return noFaceImageNeedMakeBorder;
     }
 }
