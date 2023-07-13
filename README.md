@@ -30,6 +30,14 @@
 
 &ensp; &ensp; 2、[PCN](https://github.com/Rock-100/FaceKit/tree/master/PCN)
 
+### 版本2.1.0更新
+
+* 1、InsightScrfdFaceDetection升级模型，使检测更加稳定，同时添加了人脸角度检测。
+* 2、InsightScrfdFaceDetection正对不能正常检出人脸的图片增加了补边操作，防止因为人脸过大导致不能检测到人脸。
+* 3、添加SeetaFaceOpenRecognition的人脸特征提取器，目前人脸特征提取器支持InsightArcFaceRecognition与SeetaFaceOpenRecognition。
+* 4、修复由于人脸过小，导致对齐异常的BUG。
+* 5、程序添加了SeetaFace6的人脸关键点遮挡模型。
+
 ### 版本2.0.1更新
 
 * 1、修复PCN模型存在的潜在内存泄露问题
@@ -89,22 +97,22 @@
 
 * 部署参数
 
-| 参数        | 描述   |  默认值  | 可选值|
-| --------   | -----:  | :----:  |--------|
-| VISUAL_SWAGGER_ENABLE                      | 是否开启swagger   	|   true      |                                    |
-| SPRING_DATASOURCE_URL                      | 数据库地址   		    |             |                                    |
-| SPRING_DATASOURCE_USERNAME                 | 数据库用户名    		|   root      |                                    |
-| SPRING_DATASOURCE_PASSWORD                 | 数据库密码    		|   root      |                                    |
-| VISUAL_ENGINE_OPENSEARCH_HOST              | OPENSEARCH地址   		|             |                                    |
-| VISUAL_ENGINE_OPENSEARCH_PORT              | OPENSEARCH端口    	|  9200       |                                    |
-| VISUAL_ENGINE_OPENSEARCH_SCHEME            | OPENSEARCH协议    	|  https      |                                    |
-| VISUAL_ENGINE_OPENSEARCH_USERNAME          | OPENSEARCH用户名 		|  admin      |                                    |
-| VISUAL_ENGINE_OPENSEARCH_PASSWORD          | OPENSEARCH密码   		|  admin    |                                    |
-| VISUAL_MODEL_FACEDETECTION_NAME            | 人脸检测模型名称    	|  PcnNetworkFaceDetection    |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
-| VISUAL_MODEL_FACEDETECTION_BACKUP_NAME     | 备用人脸检测模型名称    | InsightScrfdFaceDetection  |PcnNetworkFaceDetection，InsightScrfdFaceDetection|
-| VISUAL_MODEL_FACEKEYPOINT_NAME             | 人脸关键点模型名称      | InsightCoordFaceKeyPoint  |InsightCoordFaceKeyPoint|
-| VISUAL_MODEL_FACEALIGNMENT_NAME            | 人脸对齐模型名称        | Simple106pFaceAlignment  |Simple106pFaceAlignment，Simple005pFaceAlignment|
-| VISUAL_MODEL_FACERECOGNITION_NAME          | 人脸特征提取模型名称    | InsightArcFaceRecognition  |InsightArcFaceRecognition|
+| 参数        | 描述   |  默认值  | 可选值                                               |
+| --------   | -----:  | :----:  |---------------------------------------------------|
+| VISUAL_SWAGGER_ENABLE                      | 是否开启swagger   	|   true      |                                                   |
+| SPRING_DATASOURCE_URL                      | 数据库地址   		    |             |                                                   |
+| SPRING_DATASOURCE_USERNAME                 | 数据库用户名    		|   root      |                                                   |
+| SPRING_DATASOURCE_PASSWORD                 | 数据库密码    		|   root      |                                                   |
+| VISUAL_ENGINE_OPENSEARCH_HOST              | OPENSEARCH地址   		|             |                                                   |
+| VISUAL_ENGINE_OPENSEARCH_PORT              | OPENSEARCH端口    	|  9200       |                                                   |
+| VISUAL_ENGINE_OPENSEARCH_SCHEME            | OPENSEARCH协议    	|  https      |                                                   |
+| VISUAL_ENGINE_OPENSEARCH_USERNAME          | OPENSEARCH用户名 		|  admin      |                                                   |
+| VISUAL_ENGINE_OPENSEARCH_PASSWORD          | OPENSEARCH密码   		|  admin    |                                                   |
+| VISUAL_MODEL_FACEDETECTION_NAME            | 人脸检测模型名称    	|  InsightScrfdFaceDetection    | PcnNetworkFaceDetection，InsightScrfdFaceDetection |
+| VISUAL_MODEL_FACEDETECTION_BACKUP_NAME     | 备用人脸检测模型名称    | PcnNetworkFaceDetection  | PcnNetworkFaceDetection，InsightScrfdFaceDetection |
+| VISUAL_MODEL_FACEKEYPOINT_NAME             | 人脸关键点模型名称      | InsightCoordFaceKeyPoint  | InsightCoordFaceKeyPoint                          |
+| VISUAL_MODEL_FACEALIGNMENT_NAME            | 人脸对齐模型名称        | Simple106pFaceAlignment  | Simple106pFaceAlignment，Simple005pFaceAlignment   |
+| VISUAL_MODEL_FACERECOGNITION_NAME          | 人脸特征提取模型名称    | InsightArcFaceRecognition  | InsightArcFaceRecognition，SeetaFaceOpenRecognition                        |
 
 ### 性能优化
 
