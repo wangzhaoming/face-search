@@ -51,7 +51,7 @@ public class SeetaMaskFaceKeyPointTest extends BaseTest {
                 HighGui.waitKey();
             }
         }
-
+        System.exit(1);
     }
 
 }
