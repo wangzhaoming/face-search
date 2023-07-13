@@ -4,6 +4,7 @@ import com.visual.face.search.core.base.*;
 import com.visual.face.search.core.extract.FaceFeatureExtractor;
 import com.visual.face.search.core.extract.FaceFeatureExtractorImpl;
 import com.visual.face.search.core.models.*;
+import com.visual.face.search.server.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration("visualModelConfig")
 public class ModelConfig {
 
-    @Value("${spring.profiles.active}")
-    private String profile;
+    @Value("${visual.model.baseModelPath}")
+    private String baseModelPath;
 
     @Value("${visual.model.faceDetection.name}")
     private String faceDetectionName;
@@ -176,10 +177,9 @@ public class ModelConfig {
      * @return
      */
     private String[] getModelPath(String modelName, String modelPath[]){
-
         String basePath = "face-search-core/src/main/resources/";
-        if("docker".equalsIgnoreCase(profile)){
-            basePath = "/app/face-search/";
+        if(StringUtils.isNotEmpty(this.baseModelPath)){
+            basePath = this.baseModelPath.endsWith("/") ? this.baseModelPath : this.baseModelPath +"/";
         }
 
         if((null == modelPath || modelPath.length != 3) && "PcnNetworkFaceDetection".equalsIgnoreCase(modelName)){
@@ -208,6 +208,10 @@ public class ModelConfig {
 
         if((null == modelPath || modelPath.length != 1) && "InsightAttributeDetection".equalsIgnoreCase(modelName)){
             return new String[]{basePath + "model/onnx/attribute_gender_age/insight_gender_age.onnx"};
+        }
+
+        if((null == modelPath || modelPath.length != 1) && "SeetaMaskFaceKeyPoint".equalsIgnoreCase(modelName)){
+            return new String[]{basePath + "model/onnx/keypoint_seeta_mask/landmarker_005_mask_pts5.onnx"};
         }
 
         return modelPath;
