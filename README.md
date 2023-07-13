@@ -126,7 +126,7 @@
 * ![输入图片说明](scripts/images/validate-2.0.0.jpg)
 
 ### 演员识别（手机打开体验更好）
-* [http://actor-search.diven.nat300.top](http://actor-search.diven.nat300.top)
+* [http://actor-search.divenswu.com](http://actor-search.divenswu.com)
 * ![输入图片说明](scripts/images/actor-search.jpg)
 
 
