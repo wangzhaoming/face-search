@@ -179,7 +179,10 @@ public class ModelConfig {
     private String[] getModelPath(String modelName, String modelPath[]){
         String basePath = "face-search-core/src/main/resources/";
         if(StringUtils.isNotEmpty(this.baseModelPath)){
-            basePath = this.baseModelPath.endsWith("/") ? this.baseModelPath : this.baseModelPath +"/";
+            basePath = this.baseModelPath;
+            basePath = basePath.replaceAll("^\'|\'$", "");
+            basePath = basePath.replaceAll("^\"|\"$", "");
+            basePath = basePath.endsWith("/") ? basePath : basePath +"/";
         }
 
         if((null == modelPath || modelPath.length != 3) && "PcnNetworkFaceDetection".equalsIgnoreCase(modelName)){
