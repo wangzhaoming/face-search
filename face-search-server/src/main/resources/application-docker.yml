@@ -22,7 +22,7 @@ logging:
 # 模型配置
 visual:
   model:
-    baseModelPath: ${VISUAL_MODEL_BASE_MODEL_PATH:'/app/face-search/'}
+    baseModelPath: ${VISUAL_MODEL_BASE_MODEL_PATH:/app/face-search/}
     faceDetection:
       name: ${VISUAL_MODEL_FACEDETECTION_NAME:InsightScrfdFaceDetection}
       modelPath: ${VISUAL_MODEL_FACEDETECTION_PATH:}
