@@ -5,6 +5,11 @@ import org.opencv.imgproc.Imgproc;
 
 public class QualityUtil {
 
+    /**
+     * 根据图片，判断当前图片的模糊分
+     * @param image 图片数据
+     * @return  [0-100]的值域，分数越低越模糊，越高越清晰
+     */
     public static int blurForLaplacian(Mat image){
         Mat imgDesc = null, imgResize = null;
         Mat img2gray = null, laplacian = null;
