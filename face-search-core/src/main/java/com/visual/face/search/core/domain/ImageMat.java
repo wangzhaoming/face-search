@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -693,11 +694,91 @@ public class ImageMat implements Serializable {
      */
     public OnnxTensor to4dFloatOnnxTensorAndDoReleaseMat(boolean firstChannel) {
         try {
-            return OnnxTensor.createTensor(env, this.to4dFloatArrayAndDoReleaseMat(firstChannel));
+            // return OnnxTensor.createTensor(env, this.to4dFloatArrayAndDoReleaseMat(firstChannel));
+            // 经过测试，直接使用floatbuffer创建OnnxTensor,识别接口[/visual/search/do]的QPS，性能(qps)大约提升了100%。
+            long[] shape = new long[4];
+            return OnnxTensor.createTensor(env, this.toFloatBuffer(shape,firstChannel,true),shape);
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 获取指定行列和通道对应的值
+     * @param rowIndex 行号
+     * @param colIndex 列号
+     * @param channelIndex 通道号
+     * @param array 图像一维数组
+     * @param cols 图像的列数
+     * @param channels 图像的通道数
+     * @return 指定行列和通道对应的值
+     */
+    public static float get(int rowIndex,int colIndex,int channelIndex,float[] array,int cols,int channels){
+        return array[rowIndex*cols*channels+colIndex*channels+channelIndex];
+    }
+
+    /**
+     * 将mat转换成floatbuffer
+     * @param shape 用于接收数组的维度信息，传递参数为 new long[4] 的空数组
+     * @param firstChannel
+     * @param release 是否释放mat
+     * @return mat对应的floatbuffer
+     */
+    public FloatBuffer toFloatBuffer(long[] shape, boolean firstChannel, boolean release){
+        try{
+            return toFloatBuffer(shape,firstChannel,this.mat);
+        }finally {
+            if(release){
+                this.release();
+            }
+        }
+    }
+
+    /**
+     * 将mat转换成floatbuffer
+     * @param shape 用于接收数组的维度信息，传递参数为 new long[4] 的空数组
+     * @param firstChannel
+     * @param mat
+     * @return mat对应的floatbuffer
+     */
+    public static FloatBuffer toFloatBuffer(long[] shape,boolean firstChannel,Mat mat) {
+        //为了提高性能将mat转换成1维数组，遍历一维数组的性能远高于频繁的mat.get
+        float[] data = new float[(int) (mat.total() * mat.channels())];
+        mat.get(0, 0, data);
+
+        FloatBuffer floatBuffer = FloatBuffer.allocate(data.length );
+        int width = mat.cols();
+        int height =mat.rows();
+        int channel =mat.channels();
+        if(firstChannel){
+            for(int k=0; k< channel; k++){
+                for(int i=0; i<height; i++){
+                    for(int j=0; j<width; j++){
+                        floatBuffer.put(get(i,j,k,data,width,channel));
+                    }
+                }
+            }
+            shape[0] = 1;
+            shape[1] = channel;
+            shape[2] = height;
+            shape[3] = width;
+        }else{
+            for(int i=0; i<height; i++){
+                for(int j=0; j<width; j++){
+                    for(int k=0; k< channel; k++){
+                        floatBuffer.put(get(i,j,k,data,width,channel));
+                    }
+                }
+            }
+            shape[0] = 1;
+            shape[1] = height;
+            shape[2] = width;
+            shape[3] = channel;
+        }
+        floatBuffer.rewind();
+        return floatBuffer;
+    }
+
 
     /**
      * 转换为双精度形OnnxTensor,不释放原始图片数据
