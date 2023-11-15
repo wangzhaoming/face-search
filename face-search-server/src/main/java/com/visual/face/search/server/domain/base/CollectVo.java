@@ -46,6 +46,11 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
     @ApiModelProperty(value="保留图片及人脸信息的存储组件", position = 9,required = false)
     private StorageEngine storageEngine;
 
+    /**是否启用近似knn搜索**/
+    @ApiModelProperty(value="是否启用近似knn搜索", position = 10,required = false)
+    private boolean approximateKnn;
+
+
     /**
      * 构建集合对象
      * @param namespace         命名空间
@@ -54,6 +59,15 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
      */
     public static CollectVo build(String namespace, String collectionName){
         return new CollectVo().setNamespace(namespace).setCollectionName(collectionName);
+    }
+
+    public boolean isApproximateKnn() {
+        return approximateKnn;
+    }
+
+    public ExtendsVo setApproximateKnn(boolean approximateKnn){
+        this.approximateKnn = approximateKnn;
+        return (ExtendsVo) this;
     }
 
     public String getNamespace() {
@@ -144,4 +158,5 @@ public class CollectVo<ExtendsVo extends CollectVo<ExtendsVo>> extends BaseVo {
         }
         return (ExtendsVo) this;
     }
+
 }
