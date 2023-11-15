@@ -14,7 +14,11 @@ public interface SearchEngine {
 
     public boolean dropCollection(String collectionName);
 
-    public boolean createCollection(String collectionName, MapParam param);
+    default public boolean createCollection(String collectionName, MapParam param){
+        return createCollection(collectionName,param,false);
+    };
+
+    public boolean createCollection(String collectionName, MapParam param,boolean approximateKnn);
 
     public boolean insertVector(String collectionName, String sampleId, String faceId, float[] vectors);
 
@@ -22,7 +26,11 @@ public interface SearchEngine {
 
     public boolean deleteVectorByKey(String collectionName, List<String> faceIds);
 
-    public SearchResponse search(String collectionName, float[][] features, String algorithm, int topK);
+    default public SearchResponse search(String collectionName, float[][] features, String algorithm, int topK){
+        return search(collectionName,features,algorithm,topK,false);
+    };
+
+    public SearchResponse search(String collectionName, float[][] features, String algorithm, int topK, boolean approximateKnn);
 
     public float searchMinScoreBySampleId(String collectionName, String sampleId,float[] feature, String algorithm);
 

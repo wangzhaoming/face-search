@@ -15,6 +15,8 @@ public class Search<ExtendsVo extends Search<ExtendsVo>> implements Serializable
     /**对输入图像中多少个人脸进行检索比对：默认5**/
     private Integer maxFaceNum=5;
 
+    /**是否启用近似knn搜索**/
+    private boolean approximateKnn = false;
     /**
      * 构建检索对象
      * @param imageBase64       待检索的图片
@@ -31,6 +33,15 @@ public class Search<ExtendsVo extends Search<ExtendsVo>> implements Serializable
     public ExtendsVo setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
         return (ExtendsVo) this;
+    }
+
+    public boolean isApproximateKnn() {
+        return approximateKnn;
+    }
+
+    public ExtendsVo setApproximateKnn(boolean approximateKnn) {
+        this.approximateKnn = approximateKnn;
+        return (ExtendsVo)this;
     }
 
     public Float getFaceScoreThreshold() {

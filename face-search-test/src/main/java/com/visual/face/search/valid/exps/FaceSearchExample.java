@@ -26,6 +26,12 @@ public class FaceSearchExample {
     public static String collectionName = "collect_20211201_v11";
     public static FaceSearch faceSearch = FaceSearch.build(serverHost, namespace, collectionName);
 
+    //是否启用近似knn,建议底库集比较大时启用.
+    public static boolean approximateKnn = false;
+
+    //底库集比较大时，建议调大，如:32个分片
+    public static int shardsNum = 4;
+
     /**集合创建*/
     public static void collect(){
         //样本属性字段
@@ -44,7 +50,12 @@ public class FaceSearchExample {
                 //是否保存人脸及图片数据信息
                 .setStorageFaceInfo(true)
                 //目前只实现了数据库存储，对其他类型存储实现StorageImageService接口即可
-                .setStorageEngine(StorageEngine.CURR_DB);
+                .setStorageEngine(StorageEngine.CURR_DB)
+                //设置分片大小
+                .setShardsNum(shardsNum)
+                //开启关闭近似knn搜索
+                .setApproximateKnn(approximateKnn);
+
         //删除集合
         Response<Boolean> deleteCollect =  faceSearch.collect().deleteCollect();
         System.out.println(deleteCollect);
@@ -97,6 +108,9 @@ public class FaceSearchExample {
                 .search(Search.build(imageBase64)
                 .setConfidenceThreshold(50f)        //最小置信分：50
                 .setMaxFaceNum(10).setLimit(1)
+                //collect()创建集合时即使开了近似knn搜索，这里设置为false也可以使用精确knn搜索。
+                //这里数据量足够大时，就能发现近似knn返回较快
+                .setApproximateKnn(approximateKnn)
             );
             Long e = System.currentTimeMillis();
             System.out.println("search cost:" + (e-s)+"ms");
