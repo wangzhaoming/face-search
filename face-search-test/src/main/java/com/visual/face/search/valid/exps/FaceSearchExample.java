@@ -108,7 +108,7 @@ public class FaceSearchExample {
                 .search(Search.build(imageBase64)
                 .setConfidenceThreshold(50f)        //最小置信分：50
                 .setMaxFaceNum(10).setLimit(1)
-                //这里其实即使开了近似knn搜索，这里设置为false也可以使用精确knn搜索。
+                //collect()创建集合时即使开了近似knn搜索，这里设置为false也可以使用精确knn搜索。
                 //这里数据量足够大时，就能发现近似knn返回较快
                 .setApproximateKnn(approximateKnn)
             );
