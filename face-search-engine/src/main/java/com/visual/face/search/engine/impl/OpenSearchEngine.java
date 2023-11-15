@@ -3,6 +3,7 @@ package com.visual.face.search.engine.impl;
 import com.visual.face.search.engine.api.SearchEngine;
 import com.visual.face.search.engine.conf.Constant;
 import com.visual.face.search.engine.exps.SearchEngineException;
+import com.visual.face.search.engine.impl.query.ApproximateKnnQueryBuilder;
 import com.visual.face.search.engine.model.*;
 import org.apache.commons.collections4.MapUtils;
 import org.opensearch.action.DocWriteResponse;
@@ -71,17 +72,32 @@ public class OpenSearchEngine implements SearchEngine {
     }
 
     @Override
-    public boolean createCollection(String collectionName, MapParam param) {
+    public boolean createCollection(String collectionName, MapParam param,boolean approximateKnn) {
         try {
             //构建请求
             CreateIndexRequest createIndexRequest = new CreateIndexRequest(collectionName);
-            createIndexRequest.settings(Settings.builder()
-                .put("index.number_of_shards", param.getIndexShardsNum())
-                .put("index.number_of_replicas", param.getIndexReplicasNum())
-            );
+            Settings.Builder builder = Settings.builder()
+                    .put("index.number_of_shards", param.getIndexShardsNum())
+                    .put("index.number_of_replicas", param.getIndexReplicasNum());
+            if(approximateKnn){
+                //启用open search近似knn搜索支持
+                builder.put("index.knn",true);
+                builder.put("index.knn.algo_param.ef_search",param.getIndexAlgoParamEfSearch());
+            }
+
+            createIndexRequest.settings(builder);
             HashMap<String, Object> properties = new HashMap<>();
             properties.put(Constant.ColumnNameSampleId, Map.of("type", "keyword"));
-            properties.put(Constant.ColumnNameFaceVector, Map.of("type", "knn_vector", "dimension", "512"));
+            if(approximateKnn){
+                //启用open search近似knn搜索支持
+                properties.put(Constant.ColumnNameFaceVector, Map.of("type", "knn_vector", "dimension", "512",
+                        "method",Map.of("engine","nmslib",
+                                "space_type","cosinesimil",
+                                "name","hnsw",
+                                "parameters",Map.of())));
+            }else {
+                properties.put(Constant.ColumnNameFaceVector, Map.of("type", "knn_vector", "dimension", "512"));
+            }
             createIndexRequest.mapping(Map.of("properties", properties));
             //创建集合
             CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
@@ -135,23 +151,37 @@ public class OpenSearchEngine implements SearchEngine {
     }
 
     @Override
-    public SearchResponse search(String collectionName, float[][] features, String algorithm, int topK) {
+    public SearchResponse search(String collectionName, float[][] features, String algorithm, int topK,boolean approximateKnn) {
         try {
             //构建搜索请求
             MultiSearchRequest multiSearchRequest = new MultiSearchRequest();
             for(float[] feature : features){
-                QueryBuilder queryBuilder = new MatchAllQueryBuilder();
-                Map<String, Object> params = new HashMap<>();
-                params.put("field", Constant.ColumnNameFaceVector);
-                params.put("space_type", algorithm);
-                params.put("query_value", feature);
-                Script script = new Script(Script.DEFAULT_SCRIPT_TYPE, "knn", "knn_score", params);
-                ScriptScoreQueryBuilder scriptScoreQueryBuilder = new ScriptScoreQueryBuilder(queryBuilder, script);
-                SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
-                    .query(scriptScoreQueryBuilder).size(topK)
-                    .fetchSource(null, Constant.ColumnNameFaceVector); //是否需要向量字段
-                SearchRequest searchRequest = new SearchRequest(collectionName).source(searchSourceBuilder);
-                multiSearchRequest.add(searchRequest);
+                if(approximateKnn){
+                    //近似knn搜索
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("vector",feature);
+                    params.put("k",topK);
+                    ApproximateKnnQueryBuilder approximateKnnQueryBuilder = new ApproximateKnnQueryBuilder(params);
+                    SearchSourceBuilder searchSourceBuilder =new SearchSourceBuilder()
+                            .query(approximateKnnQueryBuilder).size(topK)
+                            .fetchSource(null,Constant.ColumnNameFaceVector);
+                    SearchRequest searchRequest = new SearchRequest(collectionName).source(searchSourceBuilder);
+                    multiSearchRequest.add(searchRequest);
+                }else {
+                    //常规搜索
+                    QueryBuilder queryBuilder = new MatchAllQueryBuilder();
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("field", Constant.ColumnNameFaceVector);
+                    params.put("space_type", algorithm);
+                    params.put("query_value", feature);
+                    Script script = new Script(Script.DEFAULT_SCRIPT_TYPE, "knn", "knn_score", params);
+                    ScriptScoreQueryBuilder scriptScoreQueryBuilder = new ScriptScoreQueryBuilder(queryBuilder, script);
+                    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+                            .query(scriptScoreQueryBuilder).size(topK)
+                            .fetchSource(null, Constant.ColumnNameFaceVector); //是否需要向量字段
+                    SearchRequest searchRequest = new SearchRequest(collectionName).source(searchSourceBuilder);
+                    multiSearchRequest.add(searchRequest);
+                }
             }
             //查询索引
             MultiSearchResponse response = this.client.msearch(multiSearchRequest, RequestOptions.DEFAULT);
@@ -167,7 +197,7 @@ public class OpenSearchEngine implements SearchEngine {
                 if(searchHits != null){
                     for(SearchHit searchHit : searchHits){
                         String faceId = searchHit.getId();
-                        float score = searchHit.getScore()-1;
+                        float score = approximateKnn? searchHit.getScore() : (searchHit.getScore()-1);
                         Map<String, Object> sourceMap = searchHit.getSourceAsMap();
                         String sampleId = MapUtils.getString(sourceMap, Constant.ColumnNameSampleId);
                         Object faceVector = MapUtils.getObject(sourceMap, Constant.ColumnNameFaceVector);

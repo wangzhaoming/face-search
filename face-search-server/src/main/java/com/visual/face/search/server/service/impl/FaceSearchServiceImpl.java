@@ -83,7 +83,7 @@ public class FaceSearchServiceImpl extends BaseService implements FaceSearchServ
         }
         //特征搜索
         int topK = (null == search.getLimit() || search.getLimit()  <= 0) ? 5 : search.getLimit();
-        SearchResponse searchResponse =searchEngine.search(collection.getVectorTable(), vectors, search.getAlgorithm().algorithm(), topK);
+        SearchResponse searchResponse =searchEngine.search(collection.getVectorTable(), vectors, search.getAlgorithm().algorithm(), topK,search.isApproximateKnn());
         if(!searchResponse.getStatus().ok()){
             throw new RuntimeException(searchResponse.getStatus().getReason());
         }

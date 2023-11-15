@@ -90,7 +90,7 @@ public class CollectServiceImpl extends BaseService implements CollectService {
             MapParam param = MapParam.build()
                     .put(Constant.IndexShardsNum, collect.getShardsNum())
                     .put(Constant.IndexReplicasNum, collect.getReplicasNum());
-            boolean createVectorFlag = searchEngine.createCollection(vectorTableName, param);
+            boolean createVectorFlag = searchEngine.createCollection(vectorTableName, param,collect.isApproximateKnn());
             if(!createVectorFlag){
                 throw new RuntimeException("create vector table error");
             }

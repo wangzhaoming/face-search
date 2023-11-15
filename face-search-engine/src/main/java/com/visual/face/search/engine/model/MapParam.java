@@ -70,5 +70,10 @@ public class MapParam extends ConcurrentHashMap<String, Object> {
         shardsNum = (null == shardsNum || shardsNum <= 0) ? 4  : shardsNum;
         return shardsNum;
     }
-
+    
+    public Integer getIndexAlgoParamEfSearch(){
+        Integer algoParamEfSearch = this.getInteger(Constant.IndexAlgoParamEfSearch, 512);
+        algoParamEfSearch = (null == algoParamEfSearch || algoParamEfSearch <= 0) ? 512  : algoParamEfSearch;
+        return algoParamEfSearch;
+    }
 }

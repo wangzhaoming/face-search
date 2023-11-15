@@ -48,7 +48,8 @@ public class CollectHandler extends BaseHandler<CollectHandler>{
                 .setFaceColumns(collect.getFaceColumns())
                 .setShardsNum(collect.getShardsNum())
                 .setStorageFaceInfo(collect.getStorageFaceInfo())
-                .setStorageEngine(collect.getStorageEngine());
+                .setStorageEngine(collect.getStorageEngine())
+                .setApproximateKnn(collect.isApproximateKnn());
         return HttpClient.post(Api.getUrl(this.serverHost, Api.collect_create), collectReq);
     }
 

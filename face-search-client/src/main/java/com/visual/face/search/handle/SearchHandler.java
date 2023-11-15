@@ -45,7 +45,8 @@ public class SearchHandler extends BaseHandler<SearchHandler>{
                 .setMaxFaceNum(search.getMaxFaceNum())
                 .setLimit(search.getLimit())
                 .setConfidenceThreshold(search.getConfidenceThreshold())
-                .setFaceScoreThreshold(search.getFaceScoreThreshold());
+                .setFaceScoreThreshold(search.getFaceScoreThreshold())
+                .setApproximateKnn(search.isApproximateKnn());
         return HttpClient.post(Api.getUrl(this.serverHost, Api.visual_search), searchReq, new TypeReference<Response<List<SearchRep>>>(){});
     }
 }

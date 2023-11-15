@@ -23,6 +23,9 @@ public class Collect<ExtendsVo extends Collect<ExtendsVo>> implements Serializab
     /**保留图片及人脸信息的存储组件**/
     private StorageEngine storageEngine;
 
+    /**是否启用近似knn搜索**/
+    private boolean approximateKnn;
+
     /**
      * 构建集合对象
      * @return
@@ -48,6 +51,15 @@ public class Collect<ExtendsVo extends Collect<ExtendsVo>> implements Serializab
         if(null != maxDocsPerSegment && maxDocsPerSegment >= 0){
             this.maxDocsPerSegment = maxDocsPerSegment;
         }
+        return (ExtendsVo) this;
+    }
+
+    public boolean isApproximateKnn(){
+        return this.approximateKnn;
+    }
+
+    public ExtendsVo setApproximateKnn(boolean approximateKnn){
+        this.approximateKnn = approximateKnn;
         return (ExtendsVo) this;
     }
 

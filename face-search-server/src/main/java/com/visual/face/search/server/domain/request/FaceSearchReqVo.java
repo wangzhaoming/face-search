@@ -42,6 +42,12 @@ public class FaceSearchReqVo extends BaseVo {
     @ApiModelProperty(value="对输入图像中多少个人脸进行检索比对：默认5", position = 7, required = false)
     private Integer maxFaceNum;
 
+    /**是否使用近似knn搜索**/
+    @ApiModelProperty(value="是否使用近似knn搜索", position = 8, required = false)
+    private boolean approximateKnn;
+
+
+
     /**
      * 构建检索对象
      * @param namespace         命名空间
@@ -128,6 +134,15 @@ public class FaceSearchReqVo extends BaseVo {
 
     public FaceSearchReqVo setMaxFaceNum(Integer maxFaceNum) {
         this.maxFaceNum = maxFaceNum;
+        return this;
+    }
+    
+    public boolean isApproximateKnn() {
+        return approximateKnn;
+    }
+
+    public FaceSearchReqVo setApproximateKnn(boolean approximateKnn) {
+        this.approximateKnn = approximateKnn;
         return this;
     }
 }
