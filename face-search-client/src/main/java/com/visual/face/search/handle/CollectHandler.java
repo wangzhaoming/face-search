@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.fastjson.TypeReference;
 import com.visual.face.search.common.Api;
 import com.visual.face.search.http.HttpClient;
 import com.visual.face.search.model.*;
@@ -71,7 +72,7 @@ public class CollectHandler extends BaseHandler<CollectHandler>{
         MapParam param = MapParam.build()
                 .put("namespace", namespace)
                 .put("collectionName", collectionName);
-        return HttpClient.get(Api.getUrl(this.serverHost, Api.collect_get), param);
+        return HttpClient.get(Api.getUrl(this.serverHost, Api.collect_get), param, new TypeReference<Response<CollectRep>>(){});
     }
 
     /**
@@ -80,7 +81,7 @@ public class CollectHandler extends BaseHandler<CollectHandler>{
      */
     public Response<List<CollectRep>> collectList(){
         MapParam param = MapParam.build().put("namespace", namespace);
-        return HttpClient.get(Api.getUrl(this.serverHost, Api.collect_list), param);
+        return HttpClient.get(Api.getUrl(this.serverHost, Api.collect_list), param, new TypeReference<Response<List<CollectRep>>>(){});
     }
 
 }
