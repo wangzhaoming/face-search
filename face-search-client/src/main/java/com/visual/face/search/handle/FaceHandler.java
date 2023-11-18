@@ -1,5 +1,6 @@
 package com.visual.face.search.handle;
 
+import com.alibaba.fastjson.TypeReference;
 import com.visual.face.search.common.Api;
 import com.visual.face.search.http.HttpClient;
 import com.visual.face.search.model.*;
@@ -46,7 +47,7 @@ public class FaceHandler extends BaseHandler<FaceHandler>{
                 .setFaceScoreThreshold(face.getFaceScoreThreshold())
                 .setMinConfidenceThresholdWithThisSample(face.getMinConfidenceThresholdWithThisSample())
                 .setMaxConfidenceThresholdWithOtherSample(face.getMaxConfidenceThresholdWithOtherSample());
-        return HttpClient.post(Api.getUrl(this.serverHost, Api.face_create), faceReq);
+        return HttpClient.post(Api.getUrl(this.serverHost, Api.face_create), faceReq, new TypeReference<Response<FaceRep>>(){});
     }
 
 
