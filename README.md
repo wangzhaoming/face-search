@@ -147,3 +147,6 @@
 
 ### 项目开源前端：感谢`HeX`的开源
 * [https://gitee.com/hexpang/face-search-web](https://gitee.com/hexpang/face-search-web)
+
+### 欢迎来访我的其他开源项目
+* [车牌识别：https://gitee.com/open-visual/open-anpr](https://gitee.com/open-visual/open-anpr)
