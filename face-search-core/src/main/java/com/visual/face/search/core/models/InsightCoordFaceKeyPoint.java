@@ -42,8 +42,8 @@ public class InsightCoordFaceKeyPoint extends BaseOnnxInfer implements FaceKeyPo
         OrtSession.Result output = null;
         try {
             Mat image = imageMat.toCvMat();
-            int w = image.size(1);
-            int h = image.size(0);
+            int w = image.width();
+            int h = image.height();
             float cx = 1.0f * w / 2;
             float cy = 1.0f * h / 2;
             float[]center = new float[]{cx, cy};

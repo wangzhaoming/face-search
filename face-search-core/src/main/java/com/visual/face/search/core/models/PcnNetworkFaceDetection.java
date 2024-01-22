@@ -288,8 +288,8 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
     private static List<FaceInfo> trans_window(Mat img, Mat imgPad, List<Window2> winlist, float scale){
         List<FaceInfo> ret = new ArrayList<>();
         try {
-            int row = (imgPad.size(0) - img.size(0)) / 2;
-            int col = (imgPad.size(1) - img.size(1)) / 2;
+            int row = (imgPad.height() - img.height()) / 2;
+            int col = (imgPad.width() - img.width()) / 2;
             for(Window2 win : winlist){
                 if( win.w > 0 && win.h > 0){
                     int x1 = win.x - col;
@@ -304,8 +304,8 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
                     int h = Math.abs(y2 - y1);
                     x1 = Math.max(Float.valueOf((x1 - (int)(w * rw)) * scale).intValue(), 1);
                     y1 = Math.max(Float.valueOf((y1 - (int)(h * rh)) * scale).intValue(), 1);
-                    x2 = Math.min(Float.valueOf((x2 + (int)(w * rw)) * scale).intValue(), Float.valueOf((img.size(1)) * scale).intValue()-1);
-                    y2 = Math.min(Float.valueOf((y2 + (int)(h * rh)) * scale).intValue(), Float.valueOf((img.size(0)) * scale).intValue()-1);
+                    x2 = Math.min(Float.valueOf((x2 + (int)(w * rw)) * scale).intValue(), Float.valueOf((img.width()) * scale).intValue()-1);
+                    y2 = Math.min(Float.valueOf((y2 + (int)(h * rh)) * scale).intValue(), Float.valueOf((img.height()) * scale).intValue()-1);
                     //构建人脸信息
                     FaceInfo faceInfo = FaceInfo.build(win.conf, angle, FaceInfo.FaceBox.build(x1, y1, x2, y2), FaceInfo.Points.build());
                     ret.add(faceInfo);
@@ -412,7 +412,7 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
         OnnxTensor input = null;
         OrtSession.Result output = null;
         Size size = img.size();
-        int height = img.size(0);
+        int height = img.height();
         try {
             datalist = Mats.build();
             for(Window2 win : winlist){
@@ -529,8 +529,8 @@ public class PcnNetworkFaceDetection extends BaseOnnxInfer implements FaceDetect
         OnnxTensor input = null;
         OrtSession.Result output = null;
 
-        int height = imgPad.size(0);
-        int width  = imgPad.size(1);
+        int height = imgPad.height();
+        int width  = imgPad.width();
         Size imgPadSize = imgPad.size();
         Size img180Size = img180.size();
         Size img90Size = img90.size();
