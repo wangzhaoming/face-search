@@ -167,7 +167,7 @@ public class ImageMat implements Serializable {
      * @return
      */
     public Point center(){
-        return new Point(mat.size(1)/2, mat.size(0)/2);
+        return new Point(1.0 * mat.width()/2, 1.0 * mat.height() / 2);
     }
 
     /**
@@ -333,7 +333,7 @@ public class ImageMat implements Serializable {
      */
     private ImageMat blobFromImage(double scale, Scalar mean, boolean swapRB, boolean release){
         try {
-            Mat dst = Dnn.blobFromImage(mat, scale, new Size( mat.cols(), mat.rows()), mean, swapRB);
+            Mat dst = Dnn.blobFromImage(mat, scale, new Size( mat.cols(), mat.rows()), mean, swapRB, false);
             java.util.List<Mat> mats = new ArrayList<>();
             Dnn.imagesFromBlob(dst, mats);
             dst.release();
