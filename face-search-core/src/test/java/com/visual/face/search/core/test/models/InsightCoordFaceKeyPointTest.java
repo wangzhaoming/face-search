@@ -37,7 +37,7 @@ public class InsightCoordFaceKeyPointTest extends BaseTest {
             int pointNum = 1;
             for(FaceInfo.Point keyPoint : points){
                 Imgproc.circle(image, new Point(keyPoint.x, keyPoint.y), 1, new Scalar(0,0,255), -1);
-                Imgproc.putText(image, String.valueOf(pointNum), new Point(keyPoint.x+1, keyPoint.y), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
+                Imgproc.putText(image, String.valueOf(pointNum), new Point(keyPoint.x+1, keyPoint.y), 1, 1, new Scalar(255,0,0));
                 pointNum ++ ;
                 System.out.println("["+keyPoint.x+"," +keyPoint.y+"],");
             }

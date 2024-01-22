@@ -70,7 +70,7 @@ public class FaceFeatureExtractTest extends BaseTest {
                 Imgproc.line(image, new Point(box.rightTop.x, box.rightTop.y), new Point(box.rightBottom.x, box.rightBottom.y), new Scalar(255,0,0), 1);
                 Imgproc.line(image, new Point(box.rightBottom.x, box.rightBottom.y), new Point(box.leftBottom.x, box.leftBottom.y), new Scalar(255,0,0), 1);
                 Imgproc.line(image, new Point(box.leftBottom.x, box.leftBottom.y), new Point(box.leftTop.x, box.leftTop.y), new Scalar(255,0,0), 1);
-                Imgproc.putText(image, String.valueOf(faceInfo.angle), new Point(box.leftTop.x, box.leftTop.y+15), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(0,0,255));
+                Imgproc.putText(image, String.valueOf(faceInfo.angle), new Point(box.leftTop.x, box.leftTop.y+15), 1, 1, new Scalar(0,0,255));
 //                Imgproc.rectangle(image, new Point(faceInfo.box.x1(), faceInfo.box.y1()), new Point(faceInfo.box.x2(), faceInfo.box.y2()), new Scalar(255,0,255));
 
                 FaceInfo.FaceBox box1 = faceInfo.rotateFaceBox();
@@ -80,8 +80,8 @@ public class FaceFeatureExtractTest extends BaseTest {
                 Imgproc.circle(image, new Point(box1.leftBottom.x, box1.leftBottom.y), 3, new Scalar(0,0,255), -1);
 
                 FaceInfo.Attribute attribute = faceInfo.attribute;
-                Imgproc.putText(image, attribute.valueOfGender().name(), new Point(box.center().x-10, box.center().y), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
-                Imgproc.putText(image, ""+attribute.age, new Point(box.center().x-10, box.center().y+20), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
+                Imgproc.putText(image, attribute.valueOfGender().name(), new Point(box.center().x-10, box.center().y), 1, 1, new Scalar(255,0,0));
+                Imgproc.putText(image, ""+attribute.age, new Point(box.center().x-10, box.center().y+20), 1, 1, new Scalar(255,0,0));
 
 
                 int pointNum = 1;

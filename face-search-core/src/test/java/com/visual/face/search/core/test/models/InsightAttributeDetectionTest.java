@@ -49,14 +49,14 @@ public class InsightAttributeDetectionTest extends BaseTest {
                 long a = System.currentTimeMillis();
                 FaceInfo.Attribute attribute = inferAttribute.inference(ImageMat.fromCVMat(cropFace), null);
                 System.out.println("ssss="+(System.currentTimeMillis() - a));
-                Imgproc.putText(image, attribute.valueOfGender().name(), new Point(faceInfo.box.x1()+10, faceInfo.box.y1()+10), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(0,0,255));
-                Imgproc.putText(image, ""+attribute.age, new Point(faceInfo.box.x1()+10, faceInfo.box.y1()+40), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(0,0,255));
+                Imgproc.putText(image, attribute.valueOfGender().name(), new Point(faceInfo.box.x1()+10, faceInfo.box.y1()+10), 1, 1, new Scalar(0,0,255));
+                Imgproc.putText(image, ""+attribute.age, new Point(faceInfo.box.x1()+10, faceInfo.box.y1()+40), 1, 1, new Scalar(0,0,255));
 
                 Imgproc.rectangle(image, new Point(faceInfo.box.x1(), faceInfo.box.y1()), new Point(faceInfo.box.x2(), faceInfo.box.y2()), new Scalar(0,0,255));
                 int pointNum = 1;
                 for(FaceInfo.Point keyPoint : faceInfo.points){
                     Imgproc.circle(image, new Point(keyPoint.x, keyPoint.y), 3, new Scalar(0,0,255), -1);
-                    Imgproc.putText(image, String.valueOf(pointNum), new Point(keyPoint.x+1, keyPoint.y), Imgproc.FONT_HERSHEY_PLAIN, 1, new Scalar(255,0,0));
+                    Imgproc.putText(image, String.valueOf(pointNum), new Point(keyPoint.x+1, keyPoint.y), 1, 1, new Scalar(255,0,0));
                     pointNum ++ ;
                 }
             }
