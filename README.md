@@ -1,3 +1,5 @@
+## Forked from https://gitee.com/open-visual/face-search
+
 ## 人脸搜索M:N
 
 * 本项目是阿里云视觉智能开放平台的人脸1：N的开源替代，项目中使用的模型均为开源模型，项目支持opensearch(1.x版本支持milvus和proxima)向量存储库，并具有较高的自定义能力。
@@ -130,23 +132,5 @@
 * ![输入图片说明](scripts/images/actor-search.jpg)
 
 
-### 交流群
-
-* 钉钉交流群(已解散)
-
-    关注微信公众号回复：钉钉群
-
-* 微信交流群
-
-    关注微信公众号回复：微信群
-
-* 微信公众号：关注一下，是对我最大的支持
-
-![微信公众号](scripts/images/%E5%85%AC%E4%BC%97%E5%8F%B7-%E5%BE%AE%E4%BF%A1.jpg)
-
-
 ### 项目开源前端：感谢`HeX`的开源
 * [https://gitee.com/hexpang/face-search-web](https://gitee.com/hexpang/face-search-web)
-
-### 欢迎来访我的其他开源项目
-* [车牌识别：https://gitee.com/open-visual/open-anpr](https://gitee.com/open-visual/open-anpr)
